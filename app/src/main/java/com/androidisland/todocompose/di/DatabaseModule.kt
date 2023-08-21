@@ -8,6 +8,7 @@ import com.androidisland.todocompose.util.Constants.DATABASE_NAME
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -16,7 +17,7 @@ import javax.inject.Singleton
 object DatabaseModule {
     @Singleton
     @Provides
-    fun provideDatabase(context: Context): ToDoDatabase =
+    fun provideDatabase(@ApplicationContext context: Context): ToDoDatabase =
         Room.databaseBuilder(
             context,
             ToDoDatabase::class.java,
