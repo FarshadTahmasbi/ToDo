@@ -4,12 +4,15 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -18,7 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.androidisland.todocompose.data.models.Priority
@@ -27,8 +30,22 @@ import com.androidisland.todocompose.ui.theme.dimens
 
 
 @Composable
-fun ListContent() {
-
+fun ListContent(
+    tasks: List<ToDoTask>,
+    navigateToTaskScreen: (taskId: Int) -> Unit,
+    contentPadding: PaddingValues
+) {
+    LazyColumn(contentPadding = contentPadding) {
+        items(items = tasks,
+            key = { task ->
+                task.id
+            }) { task ->
+            ToDoTaskItem(
+                toDoTask = task,
+                navigateToTaskScreen = navigateToTaskScreen
+            )
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -37,9 +54,8 @@ fun ToDoTaskItem(
     toDoTask: ToDoTask, navigateToTaskScreen: (taskId: Int) -> Unit
 ) {
     Surface(modifier = Modifier.fillMaxWidth(),
-        contentColor = MaterialTheme.colorScheme.surface,
         shape = RectangleShape,
-        tonalElevation = MaterialTheme.dimens.elevationSmall,
+        shadowElevation = MaterialTheme.dimens.elevationSmall,
         onClick = {
             navigateToTaskScreen(toDoTask.id)
         }) {
@@ -49,13 +65,14 @@ fun ToDoTaskItem(
                     modifier = Modifier.weight(9f),
                     text = toDoTask.title,
                     style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Box(
                     modifier = Modifier
                         .fillMaxHeight()
                         .weight(1f),
-                    contentAlignment = Alignment.Center,
+                    contentAlignment = Alignment.TopEnd,
                 ) {
                     Canvas(
                         modifier = Modifier.requiredSize(MaterialTheme.dimens.priorityIndicatorSize)
@@ -71,7 +88,7 @@ fun ToDoTaskItem(
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
                 color = MaterialTheme.colorScheme.onSurface,
-                textAlign = TextAlign.Justify
+//                textAlign = TextAlign.Justify
             )
         }
     }
