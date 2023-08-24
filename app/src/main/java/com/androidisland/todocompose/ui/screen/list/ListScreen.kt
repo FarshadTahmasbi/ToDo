@@ -1,5 +1,6 @@
 package com.androidisland.todocompose.ui.screen.list
 
+import android.util.Log
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -11,18 +12,33 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.androidisland.todocompose.R
 import com.androidisland.todocompose.ui.theme.ToDoComposeTheme
+import com.androidisland.todocompose.ui.viewmodel.SharedViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ListScreen(navigateToTaskScreen: (Int) -> Unit) {
-    Scaffold(
-        topBar = { ListAppBar() },
-        content = { it.toString() },
-        floatingActionButton = { ListFab(navigateToTaskScreen) }
-    )
+fun ListScreen(
+    sharedViewModel: SharedViewModel, navigateToTaskScreen: (Int) -> Unit
+) {
+
+    Scaffold(topBar = {
+        ListAppBar(
+            onSortClicked = {
+                //TODO sort
+                Log.d("test123", "Sort: $it")
+            },
+            onDeleteClicked = {
+                //TODO delete
+                Log.d("test123", "Delete")
+            },
+            onSearchClicked = {
+                //TODO search for it
+                Log.d("test123", "Searching for $it")
+            })
+    }, content = { it.toString() }, floatingActionButton = { ListFab(navigateToTaskScreen) })
 }
 
 @Composable
@@ -30,15 +46,12 @@ fun ListFab(
     onFabClicked: (Int) -> Unit
 ) {
     FloatingActionButton(
-        onClick = { onFabClicked(-1) },
-        shape = CircleShape
+        onClick = { onFabClicked(-1) }, shape = CircleShape
     ) {
         Icon(
-            imageVector = Icons.Filled.Add,
-            contentDescription = stringResource(
+            imageVector = Icons.Filled.Add, contentDescription = stringResource(
                 id = R.string.add_button
-            ),
-            tint = MaterialTheme.colorScheme.onPrimary
+            ), tint = MaterialTheme.colorScheme.onPrimary
         )
     }
 }
@@ -47,6 +60,6 @@ fun ListFab(
 @Composable
 private fun ListScreenPreview() {
     ToDoComposeTheme {
-        ListScreen(navigateToTaskScreen = {})
+        ListScreen(hiltViewModel(), navigateToTaskScreen = {})
     }
 }

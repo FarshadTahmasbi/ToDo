@@ -9,7 +9,11 @@ object Dimensions {
     val smallPadding = 6.dp
 
     val priorityIndicatorSize = 16.dp
+    val topAppBarHeight = 56.dp
+    val topAppBarElevation = 4.dp
 }
+
+const val alphaDisabled = 0.5f
 
 val MaterialTheme.dimens: Dimensions
     get() = Dimensions
