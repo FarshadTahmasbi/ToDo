@@ -1,5 +1,6 @@
 package com.androidisland.todocompose.ui.screen.list
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -18,6 +19,7 @@ import com.androidisland.todocompose.ui.theme.ToDoComposeTheme
 import com.androidisland.todocompose.ui.viewmodel.SharedViewModel
 
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListScreen(
@@ -38,7 +40,9 @@ fun ListScreen(
                 //TODO search for it
                 Log.d("test123", "Searching for $it")
             })
-    }, content = { it.toString() }, floatingActionButton = { ListFab(navigateToTaskScreen) })
+    }, content = {
+        ListContent()
+    }, floatingActionButton = { ListFab(navigateToTaskScreen) })
 }
 
 @Composable

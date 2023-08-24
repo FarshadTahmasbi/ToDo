@@ -215,7 +215,7 @@ fun SearchAppBar(
             placeholder = {
                 Text(
                     modifier = Modifier.alpha(alphaDisabled),
-                    text = "Search",
+                    text = stringResource(id = R.string.list_app_search_placeholder),
                     color = MaterialTheme.colorScheme.onPrimary
                 )
             },
@@ -229,7 +229,7 @@ fun SearchAppBar(
                     Icon(
                         modifier = Modifier.alpha(alphaDisabled),
                         imageVector = Icons.Filled.Search,
-                        contentDescription = "Search Icon",
+                        contentDescription = stringResource(id = R.string.search_icon),
                         tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }
@@ -238,7 +238,7 @@ fun SearchAppBar(
                 IconButton(onClick = onCloseClicked) {
                     Icon(
                         imageVector = Icons.Filled.Close,
-                        contentDescription = "Close Icon",
+                        contentDescription = stringResource(id = R.string.close_icon),
                         tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }

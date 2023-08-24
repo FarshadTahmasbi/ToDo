@@ -11,6 +11,8 @@ object Dimensions {
     val priorityIndicatorSize = 16.dp
     val topAppBarHeight = 64.dp
     val topAppBarElevation = 4.dp
+
+    val elevationSmall = 2.0.dp
 }
 
 const val alphaDisabled = 0.5f
