@@ -88,18 +88,22 @@ fun ListAppBar(
 fun DefaultListAppBar(
     onSearchClicked: () -> Unit, onSortClicked: (Priority) -> Unit, onDeleteClicked: () -> Unit
 ) {
-    TopAppBar(title = {
-        Text(text = "Tasks")
-    }, colors = TopAppBarDefaults.smallTopAppBarColors(
-        containerColor = MaterialTheme.colorScheme.primary,
-        titleContentColor = MaterialTheme.colorScheme.onPrimary
-    ), actions = {
-        ListAppBarActions(
-            onSearchClicked = onSearchClicked,
-            onSortClicked = onSortClicked,
-            onDeleteClicked = onDeleteClicked
-        )
-    })
+    TopAppBar(
+        title = {
+            Text(
+                text = stringResource(id = R.string.list_app_bar_title),
+                color = MaterialTheme.colorScheme.onPrimary
+            )
+        }, colors = TopAppBarDefaults.mediumTopAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            titleContentColor = MaterialTheme.colorScheme.onPrimary
+        ), actions = {
+            ListAppBarActions(
+                onSearchClicked = onSearchClicked,
+                onSortClicked = onSortClicked,
+                onDeleteClicked = onDeleteClicked
+            )
+        })
 }
 
 @Composable
@@ -203,7 +207,8 @@ fun SearchAppBar(
         color = MaterialTheme.colorScheme.primary
     ) {
         TextField(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth(),
             value = text,
             onValueChange = onTextChanged,
             placeholder = {
