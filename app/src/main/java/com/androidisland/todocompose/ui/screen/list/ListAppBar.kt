@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -47,11 +48,11 @@ fun ListAppBar(
     onDeleteClicked: () -> Unit,
     onSearchClicked: (String) -> Unit,
 ) {
-    var searchAppBarState by remember {
+    var searchAppBarState by rememberSaveable {
         mutableStateOf(SearchAppBarState.CLOSED)
     }
 
-    var searchQueryState by remember {
+    var searchQueryState by rememberSaveable {
         mutableStateOf("")
     }
 
