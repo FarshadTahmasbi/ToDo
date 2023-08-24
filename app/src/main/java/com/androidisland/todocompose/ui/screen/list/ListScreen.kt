@@ -30,7 +30,7 @@ fun ListScreen(
     LaunchedEffect(key1 = true) {
         sharedViewModel.getAllTasks()
     }
-    val allTasks by sharedViewModel.allTasks.collectAsState()
+    val allTasksResource by sharedViewModel.allTasks.collectAsState()
 
     Scaffold(topBar = {
         ListAppBar(
@@ -48,7 +48,7 @@ fun ListScreen(
             })
     }, content = {
         ListContent(
-            tasks = allTasks,
+            tasksResource = allTasksResource,
             navigateToTaskScreen = navigateToTaskScreen,
             contentPadding = it
         )

@@ -27,10 +27,43 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.androidisland.todocompose.data.models.Priority
 import com.androidisland.todocompose.data.models.ToDoTask
 import com.androidisland.todocompose.ui.theme.dimens
+import com.androidisland.todocompose.util.Resource
 
 
 @Composable
 fun ListContent(
+    tasksResource: Resource<List<ToDoTask>>,
+    navigateToTaskScreen: (taskId: Int) -> Unit,
+    contentPadding: PaddingValues
+) {
+    when (tasksResource) {
+        is Resource.Idle -> {
+
+        }
+
+        is Resource.Loading -> {
+        }
+
+        is Resource.Success -> {
+            if (tasksResource.data.isEmpty()) {
+                EmptyContent()
+            } else {
+                DisplayTasks(
+                    tasks = tasksResource.data,
+                    navigateToTaskScreen = navigateToTaskScreen,
+                    contentPadding = contentPadding
+                )
+            }
+        }
+
+        is Resource.Error -> {
+
+        }
+    }
+}
+
+@Composable
+fun DisplayTasks(
     tasks: List<ToDoTask>,
     navigateToTaskScreen: (taskId: Int) -> Unit,
     contentPadding: PaddingValues

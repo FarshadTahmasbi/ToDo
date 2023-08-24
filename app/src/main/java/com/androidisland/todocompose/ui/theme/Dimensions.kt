@@ -13,6 +13,12 @@ object Dimensions {
 
     val elevationSmall = 2.0.dp
     val elevationMedium = 4.0.dp
+    val elevationLarge = 8.0.dp
+
+    val iconSizeSmall = 16.dp
+    val iconSizeMedium = 32.dp
+    val iconSizeLarge = 64.dp
+    val iconSizeXLarge = 128.dp
 }
 
 const val alphaDisabled = 0.5f
