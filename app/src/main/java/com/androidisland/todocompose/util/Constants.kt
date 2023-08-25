@@ -7,7 +7,9 @@ object Constants {
 
     const val LIST_SCREEN = "list/{action}"
     const val TASK_SCREEN = "task/{taskId}"
+//    const val TASK_SCREEN = "task/{taskId}?task={task}"
 
     const val LIST_ARGUMENT_KEY = "action"
-    const val TASK_ARGUMENT_KEY = "taskId"
+    const val KEY_TASK_ID = "taskId"
+//    const val KEY_TASK = "task"
 }

@@ -14,6 +14,9 @@ class Screens(navController: NavHostController) {
         }
     }
     val task: (Int) -> Unit = { taskId ->
+//        val task = ToDoTask(1, "title", "desc", Priority.LOW)
+//        val json = Uri.encode(Gson().toJson(task))
+//        navController.navigate("task/$taskId?task=$json")
         navController.navigate("task/$taskId")
     }
 }

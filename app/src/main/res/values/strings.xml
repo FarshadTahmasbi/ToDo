@@ -8,6 +8,10 @@
     <string name="list_app_search_placeholder">Search</string>
     <string name="search_icon">Search Icon</string>
     <string name="close_icon">Close Icon</string>
+    <string name="delete_icon">Delete Icon</string>
+    <string name="update_icon">Update Icon</string>
     <string name="sad_face_icon">Sad Face Icon</string>
     <string name="empty_content_msg">No Tasks Found</string>
+    <string name="add_task">Add Task</string>
+    <string name="back_arrow">Back Arrow</string>
 </resources>

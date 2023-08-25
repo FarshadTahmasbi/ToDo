@@ -10,7 +10,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
@@ -27,9 +26,6 @@ fun ListScreen(
     sharedViewModel: SharedViewModel,
     navigateToTaskScreen: (Int) -> Unit
 ) {
-    LaunchedEffect(key1 = true) {
-        sharedViewModel.getAllTasks()
-    }
     val allTasksResource by sharedViewModel.allTasks.collectAsState()
 
     Scaffold(topBar = {

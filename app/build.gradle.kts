@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
+    id("kotlin-parcelize")
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
 }
@@ -103,4 +104,6 @@ dependencies {
     //Navigation
     implementation("androidx.navigation:navigation-compose:2.7.0")
 
+    //Serialization
+    implementation("com.google.code.gson:gson:2.10.1")
 }

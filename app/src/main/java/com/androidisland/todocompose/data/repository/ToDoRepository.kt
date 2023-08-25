@@ -19,7 +19,7 @@ class ToDoRepository @Inject constructor(private val toDoDao: ToDoDao) {
         toDoDao.sortByHighPriority()
     }
 
-    fun getSelectedTask(taskId: Int): Flow<ToDoTask> = toDoDao.getSelectedTask(taskId)
+    fun getTask(taskId: Int): Flow<ToDoTask> = toDoDao.getTask(taskId)
     suspend fun addTask(toDoTask: ToDoTask) = toDoDao.addTask(toDoTask)
 
     suspend fun updateTask(toDoTask: ToDoTask) = toDoDao.updateTask(toDoTask)
