@@ -14,4 +14,5 @@
     <string name="empty_content_msg">No Tasks Found</string>
     <string name="add_task">Add Task</string>
     <string name="back_arrow">Back Arrow</string>
+    <string name="drop_down_arrow">Drop-down Arrow Icon</string>
 </resources>

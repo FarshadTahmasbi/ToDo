@@ -1,5 +1,6 @@
 package com.androidisland.todocompose.ui.screen.list
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
@@ -143,7 +144,8 @@ fun SortAction(
             contentDescription = stringResource(id = R.string.search_action),
             tint = MaterialTheme.colorScheme.onPrimary
         )
-        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+        DropdownMenu(modifier = Modifier.background(color = MaterialTheme.colorScheme.surface),
+            expanded = expanded, onDismissRequest = { expanded = false }) {
             DropdownMenuItem(onClick = {
                 expanded = false
                 onSortClicked(Priority.LOW)
