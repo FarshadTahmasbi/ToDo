@@ -10,6 +10,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class SharedViewModel @Inject constructor(private val repository: ToDoRepository) : ViewModel() {
@@ -19,5 +20,22 @@ class SharedViewModel @Inject constructor(private val repository: ToDoRepository
     }
 
     suspend fun getTask(taskId: Int): ToDoTask? = repository.getTask(taskId).firstOrNull()
+    fun addTask(toDoTask: ToDoTask) {
+        viewModelScope.launch {
+            repository.addTask(toDoTask)
+        }
+    }
+
+    fun updateTask(toDoTask: ToDoTask) {
+        viewModelScope.launch {
+            repository.updateTask(toDoTask)
+        }
+    }
+
+    fun deleteTask(toDoTask: ToDoTask) {
+        viewModelScope.launch {
+            repository.deleteTask(toDoTask)
+        }
+    }
 
 }

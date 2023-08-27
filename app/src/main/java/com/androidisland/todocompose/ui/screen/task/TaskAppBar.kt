@@ -23,7 +23,7 @@ import com.androidisland.todocompose.util.Action
 
 
 @Composable
-fun TaskAppBAr(
+fun TaskAppBar(
     toDoTask: ToDoTask?, navigateToListScreen: (Action) -> Unit
 ) {
     if (toDoTask == null) {

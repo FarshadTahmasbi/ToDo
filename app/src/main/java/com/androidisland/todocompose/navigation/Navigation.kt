@@ -1,28 +1,66 @@
 package com.androidisland.todocompose.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
-import com.androidisland.todocompose.navigation.destination.listComposable
-import com.androidisland.todocompose.navigation.destination.taskComposable
+import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
+import com.androidisland.todocompose.data.models.ToDoTask
+import com.androidisland.todocompose.ui.screen.list.ListScreen
+import com.androidisland.todocompose.ui.screen.task.TaskScreen
 import com.androidisland.todocompose.ui.viewmodel.SharedViewModel
-import com.androidisland.todocompose.util.Constants.LIST_SCREEN
+import com.androidisland.todocompose.util.Constants
 
 
 @Composable
-fun SetupNavigation(
-    navController: NavHostController,
-    sharedViewModel: SharedViewModel
+fun SetUpToDoAppNavigation(
+    navController: NavHostController, actions: Actions, sharedViewModel: SharedViewModel
 ) {
-    val screen = remember(navController) {
-        Screens(navController)
-    }
     NavHost(
-        navController = navController,
-        startDestination = LIST_SCREEN
+        navController = navController, startDestination = Screen.TaskList.route
     ) {
-        listComposable(screen.task, sharedViewModel)
-        taskComposable(screen.list, sharedViewModel)
+        listComposable(sharedViewModel, actions.navigateToTask)
+        taskComposable(sharedViewModel, actions.navigateToTaskList)
+    }
+}
+
+fun NavGraphBuilder.listComposable(
+    sharedViewModel: SharedViewModel,
+    navigateToTask: (Int) -> Unit,
+) {
+    composable(route = Screen.TaskList.route) {
+        ListScreen(
+            sharedViewModel = sharedViewModel, navigateToTaskScreen = navigateToTask
+        )
+    }
+}
+
+fun NavGraphBuilder.taskComposable(
+    sharedViewModel: SharedViewModel,
+    navigateToTaskList: () -> Unit,
+) {
+    composable(
+        route = Screen.Task.route, arguments = listOf(
+            navArgument(Screen.Task.Args.taskId) {
+                type = NavType.IntType
+            },
+//            navArgument(KEY_TASK) {
+//                type = ToDoTaskNavType()
+//                nullable = true
+//            }
+        ),
+        //TODO move to screen
+        deepLinks = listOf(navDeepLink { uriPattern = "${Constants.DEEP_LINK_URI}/{taskId}" })
+    ) { navBackStackEntry ->
+        val task by produceState<ToDoTask?>(initialValue = null) {
+            val taskId = navBackStackEntry.arguments!!.getInt(Screen.Task.Args.taskId)
+            value = sharedViewModel.getTask(taskId)
+        }
+        TaskScreen(task, sharedViewModel, navigateToTaskList)
     }
 }

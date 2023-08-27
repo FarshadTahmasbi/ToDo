@@ -16,7 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.androidisland.todocompose.R
-import com.androidisland.todocompose.ui.theme.ToDoComposeTheme
+import com.androidisland.todocompose.ui.theme.ToDoAppTheme
 import com.androidisland.todocompose.ui.viewmodel.SharedViewModel
 
 
@@ -69,7 +69,7 @@ fun ListFab(
 @Preview
 @Composable
 private fun ListScreenPreview() {
-    ToDoComposeTheme {
+    ToDoAppTheme {
         ListScreen(hiltViewModel(), navigateToTaskScreen = {})
     }
 }
