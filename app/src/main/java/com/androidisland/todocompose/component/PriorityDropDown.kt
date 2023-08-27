@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.DropdownMenu
@@ -23,18 +24,22 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.IntSize
 import com.androidisland.todocompose.R
 import com.androidisland.todocompose.data.models.Priority
 import com.androidisland.todocompose.ui.theme.alphaDisabled
 import com.androidisland.todocompose.ui.theme.dimens
 
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun PriorityDropDown(
     priority: Priority, onPrioritySelected: (Priority) -> Unit
@@ -48,15 +53,24 @@ fun PriorityDropDown(
         label = "Drop down arrow animation"
     )
 
+    //Use this to track parent width and pass it to drop down menu
+    var rowWidth by remember { mutableStateOf(IntSize.Zero) }
+
     Row(modifier = Modifier
         .fillMaxWidth()
         .clickable { expanded = true }
-        .background(color = MaterialTheme.colorScheme.surface, shape = RectangleShape)
+        .background(color = MaterialTheme.colorScheme.background, shape = RectangleShape)
         .border(
-            width = 1.dp, color = MaterialTheme.colorScheme.surface.copy(alpha = alphaDisabled)
+            width = MaterialTheme.dimens.borderWidthSmall,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = alphaDisabled),
+            shape = MaterialTheme.shapes.extraSmall
         )
-        .padding(MaterialTheme.dimens.smallPadding),
-        verticalAlignment = Alignment.CenterVertically) {
+        .padding(MaterialTheme.dimens.smallPadding)
+        .onSizeChanged {
+            rowWidth = it
+        },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Canvas(
             modifier = Modifier
                 .size(MaterialTheme.dimens.priorityIndicatorSize)
@@ -75,14 +89,14 @@ fun PriorityDropDown(
         IconButton(modifier = Modifier
             .rotate(angle)
             .weight(1f),
-            onClick = { expanded = true }) {
+            onClick = { expanded = expanded.not() }) {
             Icon(
                 imageVector = Icons.Filled.ArrowDropDown,
                 contentDescription = stringResource(R.string.drop_down_arrow)
             )
         }
         DropdownMenu(modifier = Modifier
-            .fillMaxWidth()
+            .width(LocalDensity.current.run { rowWidth.width.toDp() })
             .background(color = MaterialTheme.colorScheme.surface),
             expanded = expanded,
             onDismissRequest = { expanded = false }) {

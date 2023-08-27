@@ -15,4 +15,6 @@
     <string name="add_task">Add Task</string>
     <string name="back_arrow">Back Arrow</string>
     <string name="drop_down_arrow">Drop-down Arrow Icon</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
 </resources>

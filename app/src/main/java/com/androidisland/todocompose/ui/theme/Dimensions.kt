@@ -19,6 +19,9 @@ object Dimensions {
     val iconSizeMedium = 32.dp
     val iconSizeLarge = 64.dp
     val iconSizeXLarge = 128.dp
+
+    val borderWidthSmall = 1.dp
+    val borderWidthMedium = 2.dp
 }
 
 const val alphaDisabled = 0.5f
