@@ -18,9 +18,7 @@ import com.androidisland.todocompose.util.Action
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskScreen(
-    toDoTask: ToDoTask?,
-    sharedViewModel: SharedViewModel,
-    navigateToListScreen: () -> Unit
+    toDoTask: ToDoTask?, sharedViewModel: SharedViewModel, navigateToListScreen: () -> Unit
 ) {
 
     var title by remember(toDoTask) {
@@ -35,50 +33,42 @@ fun TaskScreen(
         mutableStateOf(toDoTask?.priority ?: Priority.LOW)
     }
 
+    val onActionClicked: (Action) -> Unit = remember {
+        { action: Action ->
+            when (action) {
+                Action.ADD -> {
+                    sharedViewModel.addTask(ToDoTask(0, title, description, priority))
+                }
 
-    val onActionClicked: (Action) -> Unit = { action: Action ->
-        when (action) {
-            Action.ADD -> {
-                sharedViewModel.addTask(ToDoTask(0, title, description, priority))
-            }
-
-            Action.UPDATE -> {
-                sharedViewModel.updateTask(
-                    toDoTask!!.copy(
-                        title = title,
-                        description = description,
-                        priority = priority
+                Action.UPDATE -> {
+                    sharedViewModel.updateTask(
+                        toDoTask!!.copy(
+                            title = title, description = description, priority = priority
+                        )
                     )
-                )
-            }
+                }
 
-            Action.DELETE -> {
-                sharedViewModel.deleteTask(toDoTask!!)
-            }
+                Action.DELETE -> {
+                    sharedViewModel.deleteTask(toDoTask!!)
+                }
 
-            else -> Unit
+                else -> Unit
+            }
+            navigateToListScreen()
         }
-        navigateToListScreen()
     }
 
 
     Scaffold(topBar = {
         TaskAppBar(toDoTask = toDoTask, onActionClicked = onActionClicked)
     }, content = { padding ->
-        TaskContent(
-            title = title,
-            onTitleChanged = {
-                title = it
-            },
-            description = description,
-            onDescriptionChanged = {
-                description = it
-            },
-            priority = priority,
-            onPrioritySelected = {
-                priority = it
-            },
-            padding
+        TaskContent(title = title, onTitleChanged = {
+            title = it
+        }, description = description, onDescriptionChanged = {
+            description = it
+        }, priority = priority, onPrioritySelected = {
+            priority = it
+        }, padding
         )
     })
 }
