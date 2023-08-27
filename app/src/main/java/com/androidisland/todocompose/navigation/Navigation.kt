@@ -9,17 +9,17 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import androidx.navigation.navDeepLink
 import com.androidisland.todocompose.data.models.ToDoTask
 import com.androidisland.todocompose.ui.screen.list.ListScreen
 import com.androidisland.todocompose.ui.screen.task.TaskScreen
 import com.androidisland.todocompose.ui.viewmodel.SharedViewModel
-import com.androidisland.todocompose.util.Constants
 
 
 @Composable
 fun SetUpToDoAppNavigation(
-    navController: NavHostController, actions: Actions, sharedViewModel: SharedViewModel
+    navController: NavHostController,
+    actions: Actions,
+    sharedViewModel: SharedViewModel
 ) {
     NavHost(
         navController = navController, startDestination = Screen.TaskList.route
@@ -33,7 +33,10 @@ fun NavGraphBuilder.listComposable(
     sharedViewModel: SharedViewModel,
     navigateToTask: (Int) -> Unit,
 ) {
-    composable(route = Screen.TaskList.route) {
+    composable(
+        route = Screen.TaskList.route,
+        deepLinks = Screen.TaskList.deepLinks
+    ) {
         ListScreen(
             sharedViewModel = sharedViewModel, navigateToTaskScreen = navigateToTask
         )
@@ -55,7 +58,7 @@ fun NavGraphBuilder.taskComposable(
 //            }
         ),
         //TODO move to screen
-        deepLinks = listOf(navDeepLink { uriPattern = "${Constants.DEEP_LINK_URI}/{taskId}" })
+        deepLinks = Screen.Task.deepLinks
     ) { navBackStackEntry ->
         val task by produceState<ToDoTask?>(initialValue = null) {
             val taskId = navBackStackEntry.arguments!!.getInt(Screen.Task.Args.taskId)

@@ -1,5 +1,6 @@
 package com.androidisland.todocompose
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -10,6 +11,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.androidisland.todocompose.navigation.Actions
 import com.androidisland.todocompose.navigation.SetUpToDoAppNavigation
@@ -21,17 +23,29 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val sharedViewModel: SharedViewModel by viewModels()
+    private lateinit var navController: NavHostController
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            ToDoApp(sharedViewModel = sharedViewModel)
+            navController = rememberNavController()
+            ToDoApp(
+                navController = navController,
+                sharedViewModel = sharedViewModel
+            )
         }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        navController.handleDeepLink(intent)
     }
 }
 
 @Composable
-fun ToDoApp(sharedViewModel: SharedViewModel) {
-    val navController = rememberNavController()
+fun ToDoApp(
+    navController: NavHostController,
+    sharedViewModel: SharedViewModel
+) {
     val actions = remember {
         Actions(navController)
     }
