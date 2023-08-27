@@ -24,19 +24,19 @@ import com.androidisland.todocompose.util.Action
 
 @Composable
 fun TaskAppBar(
-    toDoTask: ToDoTask?, navigateToListScreen: (Action) -> Unit
+    toDoTask: ToDoTask?, onActionClicked: (Action) -> Unit
 ) {
     if (toDoTask == null) {
-        NewTaskAppBar(navigateToListScreen = navigateToListScreen)
+        NewTaskAppBar(onActionClicked = onActionClicked)
     } else {
-        ExistingTaskAppBar(selectedTask = toDoTask, navigateToListScreen = navigateToListScreen)
+        ExistingTaskAppBar(selectedTask = toDoTask, onActionClicked = onActionClicked)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewTaskAppBar(
-    navigateToListScreen: (Action) -> Unit
+    onActionClicked: (Action) -> Unit
 ) {
     TopAppBar(title = {
         Text(
@@ -44,12 +44,12 @@ fun NewTaskAppBar(
             color = MaterialTheme.colorScheme.onPrimary
         )
     }, navigationIcon = {
-        BackAction(onBackClicked = navigateToListScreen)
+        BackAction(onBackClicked = onActionClicked)
     }, colors = TopAppBarDefaults.smallTopAppBarColors(
         containerColor = MaterialTheme.colorScheme.primary,
         titleContentColor = MaterialTheme.colorScheme.onPrimary
     ), actions = {
-        AddAction(onAddClicked = navigateToListScreen)
+        AddAction(onAddClicked = onActionClicked)
     })
 }
 
@@ -82,7 +82,7 @@ fun AddAction(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExistingTaskAppBar(
-    selectedTask: ToDoTask, navigateToListScreen: (Action) -> Unit
+    selectedTask: ToDoTask, onActionClicked: (Action) -> Unit
 ) {
     TopAppBar(title = {
         Text(
@@ -92,13 +92,13 @@ fun ExistingTaskAppBar(
             overflow = TextOverflow.Ellipsis
         )
     }, navigationIcon = {
-        CloseAction(onCloseClicked = navigateToListScreen)
+        CloseAction(onCloseClicked = onActionClicked)
     }, colors = TopAppBarDefaults.smallTopAppBarColors(
         containerColor = MaterialTheme.colorScheme.primary,
         titleContentColor = MaterialTheme.colorScheme.onPrimary
     ), actions = {
-        DeleteAction(onDeleteClicked = navigateToListScreen)
-        UpdateAction(onUpdateClicked = navigateToListScreen)
+        DeleteAction(onDeleteClicked = onActionClicked)
+        UpdateAction(onUpdateClicked = onActionClicked)
     })
 }
 
@@ -144,12 +144,12 @@ fun UpdateAction(
 @Preview
 @Composable
 fun NewTaskAppBarPreview() {
-    NewTaskAppBar(navigateToListScreen = {})
+    NewTaskAppBar(onActionClicked = {})
 }
 
 @Preview
 @Composable
 fun ExistingTaskAppBarPreview() {
     ExistingTaskAppBar(selectedTask = ToDoTask(1, "Title", "Description goes here", Priority.LOW),
-        navigateToListScreen = {})
+        onActionClicked = {})
 }

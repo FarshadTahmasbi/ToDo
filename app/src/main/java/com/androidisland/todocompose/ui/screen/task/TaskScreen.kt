@@ -63,7 +63,7 @@ fun TaskScreen(
 
 
     Scaffold(topBar = {
-        TaskAppBar(toDoTask = toDoTask, navigateToListScreen = onActionClicked)
+        TaskAppBar(toDoTask = toDoTask, onActionClicked = onActionClicked)
     }, content = { padding ->
         TaskContent(
             title = title,

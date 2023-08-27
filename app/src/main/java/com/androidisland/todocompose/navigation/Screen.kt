@@ -8,9 +8,9 @@ sealed class Screen(val route: String) {
 
     open val deepLinks = listOf<NavDeepLink>()
 
-    object TaskList : Screen("taskList") {
+    object TaskList : Screen("tasks") {
         override val deepLinks: List<NavDeepLink>
-            get() = listOf(navDeepLink { uriPattern = "todo://shit" })
+            get() = listOf(navDeepLink { uriPattern = "todo://tasks" })
     }
 
     object Task : Screen("tasks/{$taskId}") {

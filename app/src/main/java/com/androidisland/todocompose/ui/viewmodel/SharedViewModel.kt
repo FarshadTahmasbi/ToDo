@@ -19,7 +19,11 @@ class SharedViewModel @Inject constructor(private val repository: ToDoRepository
         repository.getAllTasks.toResourceStateFlow(viewModelScope)
     }
 
-    suspend fun getTask(taskId: Int): ToDoTask? = repository.getTask(taskId).firstOrNull()
+    suspend fun getTask(taskId: Int): ToDoTask? =
+        taskId.takeIf { it > 0 }?.let { id ->
+            repository.getTask(id).firstOrNull()
+        }
+
     fun addTask(toDoTask: ToDoTask) {
         viewModelScope.launch {
             repository.addTask(toDoTask)
