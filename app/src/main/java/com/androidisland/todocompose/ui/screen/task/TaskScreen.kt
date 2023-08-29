@@ -10,6 +10,7 @@ import androidx.compose.runtime.setValue
 import com.androidisland.todocompose.R
 import com.androidisland.todocompose.data.models.Priority
 import com.androidisland.todocompose.data.models.ToDoTask
+import com.androidisland.todocompose.navigation.SnackbarAppState
 import com.androidisland.todocompose.ui.viewmodel.SharedViewModel
 import com.androidisland.todocompose.util.Action
 import com.androidisland.todocompose.util.Either
@@ -19,7 +20,7 @@ import com.androidisland.todocompose.util.Either
 @Composable
 fun TaskScreen(
     sharedViewModel: SharedViewModel,
-    showSnackbar: (Either<String, Int>) -> Unit,
+    snackbarAppState: SnackbarAppState,
     toDoTask: ToDoTask?,
     navigateToListScreen: () -> Unit
 ) {
@@ -38,12 +39,12 @@ fun TaskScreen(
     val onActionClicked: (Action) -> Unit = remember(toDoTask) {
         { action: Action ->
             if (action.isEditMode() && sharedViewModel.isValid(title, description).not()) {
-                showSnackbar(Either.Right(R.string.empty_fields_msg))
+                snackbarAppState.showSnackbar(message = Either.Right(R.string.empty_fields_msg))
             } else {
                 when (action) {
                     Action.ADD -> {
                         sharedViewModel.addTask(ToDoTask(0, title, description, priority))
-                        showSnackbar(Either.Right(R.string.task_add_msg))
+                        snackbarAppState.showSnackbar(Either.Right(R.string.task_add_msg))
                     }
 
                     Action.UPDATE -> {
@@ -52,12 +53,12 @@ fun TaskScreen(
                                 title = title, description = description, priority = priority
                             )
                         )
-                        showSnackbar(Either.Right(R.string.task_update_msg))
+                        snackbarAppState.showSnackbar(Either.Right(R.string.task_update_msg))
                     }
 
                     Action.DELETE -> {
                         sharedViewModel.deleteTask(toDoTask!!)
-                        showSnackbar(Either.Right(R.string.task_delete_msg))
+                        snackbarAppState.showSnackbar(Either.Right(R.string.task_delete_msg))
                     }
 
                     else -> Unit

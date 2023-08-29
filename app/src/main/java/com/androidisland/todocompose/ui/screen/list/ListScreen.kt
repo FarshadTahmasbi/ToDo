@@ -10,16 +10,19 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.androidisland.todocompose.R
+import com.androidisland.todocompose.navigation.SnackbarAppState
 import com.androidisland.todocompose.ui.theme.ToDoAppTheme
 import com.androidisland.todocompose.ui.viewmodel.SharedViewModel
 import kotlinx.coroutines.launch
@@ -30,6 +33,7 @@ import kotlinx.coroutines.launch
 fun ListScreen(
     sharedViewModel: SharedViewModel,
     navigateToTaskScreen: (Int) -> Unit,
+    snackbarAppState: SnackbarAppState
 ) {
     val allTasksResource by sharedViewModel.allTasks.collectAsState()
 
@@ -48,6 +52,7 @@ fun ListScreen(
                 Log.d("test123", "Searching for $it")
             })
     },
+        snackbarHost = { SnackbarHost(snackbarAppState.hostState) },
         content = {
             ListContent(
                 tasksResource = allTasksResource,
@@ -76,7 +81,15 @@ fun ListFab(
 @Composable
 private fun ListScreenPreview() {
     ToDoAppTheme {
-        ListScreen(hiltViewModel(), navigateToTaskScreen = {})
+        ListScreen(
+            hiltViewModel(),
+            navigateToTaskScreen = {},
+            snackbarAppState = SnackbarAppState(
+                LocalContext.current.applicationContext,
+                SnackbarHostState(),
+                rememberCoroutineScope()
+            )
+        )
     }
 }
 
