@@ -32,12 +32,12 @@ fun EmptyContent() {
             modifier = Modifier.size(MaterialTheme.dimens.iconSizeXLarge),
             painter = painterResource(id = R.drawable.ic_sad_face),
             contentDescription = stringResource(id = R.string.sad_face_icon),
-            tint = MaterialTheme.colorScheme.onBackground
+            tint = MaterialTheme.colorScheme.inverseOnSurface
         )
         Text(
             modifier = Modifier.padding(all = MaterialTheme.dimens.mediumPadding),
             text = stringResource(R.string.empty_content_msg),
-            color = MaterialTheme.colorScheme.onBackground,
+            color = MaterialTheme.colorScheme.inverseOnSurface,
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.headlineMedium
         )
