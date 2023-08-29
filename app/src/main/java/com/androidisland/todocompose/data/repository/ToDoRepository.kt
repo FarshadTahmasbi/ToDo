@@ -27,5 +27,5 @@ class ToDoRepository @Inject constructor(private val toDoDao: ToDoDao) {
     suspend fun deleteAllTasks() = toDoDao.deleteAllTasks()
 
     fun searchTasks(searchQuery: String): Flow<List<ToDoTask>> =
-        toDoDao.searchTasks(searchQuery)
+        toDoDao.searchTasks("%$searchQuery%")
 }

@@ -23,7 +23,8 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class SharedViewModel @Inject constructor(
-    private val repository: ToDoRepository, private val dispatchers: CoroutineDispatchers
+    private val repository: ToDoRepository,
+    private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
     private val _queriedTasks: MutableStateFlow<Resource<List<ToDoTask>>> =
