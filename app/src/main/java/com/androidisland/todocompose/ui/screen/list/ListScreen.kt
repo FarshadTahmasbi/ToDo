@@ -37,27 +37,31 @@ fun ListScreen(
     viewModel: SharedViewModel,
     navigateToTaskScreen: (Int) -> Unit
 ) {
-    val allTasksResource by viewModel.allTasks.collectAsState()
+    val taskQueryResult by viewModel.queriedTasks.collectAsState()
     val snackbarAppState = rememberSnackbarState()
+    val searchQuery by viewModel.searchQuery.collectAsState()
 
     HandleActionLaunchedEffect(action, toDoTask, snackbarAppState, viewModel)
 
     Scaffold(topBar = {
-        ListAppBar(onSortClicked = {
-            //TODO sort
-            Log.d("test123", "Sort: $it")
-        }, onDeleteClicked = {
-            //TODO delete
-            Log.d("test123", "Delete")
-        }, onSearchClicked = {
-            //TODO search for it
-            Log.d("test123", "Searching for $it")
-        })
+        ListAppBar(
+            searchQuery = searchQuery,
+            onSortClicked = {
+                //TODO sort
+                Log.d("test123", "Sort: $it")
+            }, onDeleteClicked = {
+                //TODO delete
+                Log.d("test123", "Delete")
+            }, onSearchClicked = {
+                viewModel.queryTasks(it)
+            }, onCloseClicked = {
+                viewModel.queryTasks(null)
+            })
     },
         snackbarHost = { CustomSnackbarHost(hostState = snackbarAppState.hostState) },
         content = {
             ListContent(
-                tasksResource = allTasksResource,
+                tasksResource = taskQueryResult,
                 navigateToTaskScreen = navigateToTaskScreen,
                 contentPadding = it
             )

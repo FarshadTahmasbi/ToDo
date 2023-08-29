@@ -22,6 +22,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,11 +30,16 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import com.androidisland.todocompose.R
 import com.androidisland.todocompose.component.PriorityItem
@@ -45,16 +51,32 @@ import com.androidisland.todocompose.util.SearchAppBarState
 
 @Composable
 fun ListAppBar(
+    searchQuery: String?,
     onSortClicked: (Priority) -> Unit,
     onDeleteClicked: () -> Unit,
     onSearchClicked: (String) -> Unit,
+    onCloseClicked: () -> Unit
 ) {
-    var searchAppBarState by rememberSaveable {
-        mutableStateOf(SearchAppBarState.CLOSED)
+
+//    var searchQueryState by rememberSaveable {
+//        mutableStateOf(searchQuery.orEmpty())
+//    }
+
+    var searchQueryState by remember {
+        val initialValue = searchQuery.orEmpty()
+        mutableStateOf(
+            TextFieldValue(
+                text = initialValue,
+                selection = TextRange(initialValue.length)
+            )
+        )
     }
 
-    var searchQueryState by rememberSaveable {
-        mutableStateOf("")
+    var searchAppBarState by rememberSaveable {
+        mutableStateOf(
+            if (searchQueryState.text.isEmpty()) SearchAppBarState.CLOSED
+            else SearchAppBarState.OPENED
+        )
     }
 
     when (searchAppBarState) {
@@ -62,25 +84,24 @@ fun ListAppBar(
             DefaultListAppBar(
                 onSearchClicked = {
                     searchAppBarState = SearchAppBarState.OPENED
-                }, onSortClicked = onSortClicked,
-                onDeleteClicked = onDeleteClicked
+                }, onSortClicked = onSortClicked, onDeleteClicked = onDeleteClicked
             )
         }
 
         else -> {
-            SearchAppBar(
-                text = searchQueryState,
-                onTextChanged = {
-                    searchQueryState = it
-                },
-                onCloseClicked = {
-                    if (searchQueryState.isNotEmpty()) searchQueryState = ""
-                    else searchAppBarState = SearchAppBarState.CLOSED
-                },
-                onSearchClicked = {
-                    onSearchClicked(searchQueryState)
+            val focusManager = LocalFocusManager.current
+            SearchAppBar(textFieldValue = searchQueryState, onTextChanged = {
+                searchQueryState = it
+            }, onCloseClicked = {
+                if (searchQueryState.text.isNotEmpty()) searchQueryState = TextFieldValue(text = "")
+                else {
+                    searchAppBarState = SearchAppBarState.CLOSED
+                    onCloseClicked()
                 }
-            )
+            }, onSearchClicked = {
+                focusManager.clearFocus()
+                onSearchClicked(searchQueryState.text)
+            })
         }
     }
 }
@@ -90,22 +111,21 @@ fun ListAppBar(
 fun DefaultListAppBar(
     onSearchClicked: () -> Unit, onSortClicked: (Priority) -> Unit, onDeleteClicked: () -> Unit
 ) {
-    TopAppBar(
-        title = {
-            Text(
-                text = stringResource(id = R.string.list_app_bar_title),
-                color = MaterialTheme.colorScheme.onPrimary
-            )
-        }, colors = TopAppBarDefaults.smallTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            titleContentColor = MaterialTheme.colorScheme.onPrimary
-        ), actions = {
-            ListAppBarActions(
-                onSearchClicked = onSearchClicked,
-                onSortClicked = onSortClicked,
-                onDeleteClicked = onDeleteClicked
-            )
-        })
+    TopAppBar(title = {
+        Text(
+            text = stringResource(id = R.string.list_app_bar_title),
+            color = MaterialTheme.colorScheme.onPrimary
+        )
+    }, colors = TopAppBarDefaults.smallTopAppBarColors(
+        containerColor = MaterialTheme.colorScheme.primary,
+        titleContentColor = MaterialTheme.colorScheme.onPrimary
+    ), actions = {
+        ListAppBarActions(
+            onSearchClicked = onSearchClicked,
+            onSortClicked = onSortClicked,
+            onDeleteClicked = onDeleteClicked
+        )
+    })
 }
 
 @Composable
@@ -145,7 +165,8 @@ fun SortAction(
             tint = MaterialTheme.colorScheme.onPrimary
         )
         DropdownMenu(modifier = Modifier.background(color = MaterialTheme.colorScheme.surface),
-            expanded = expanded, onDismissRequest = { expanded = false }) {
+            expanded = expanded,
+            onDismissRequest = { expanded = false }) {
             DropdownMenuItem(onClick = {
                 expanded = false
                 onSortClicked(Priority.LOW)
@@ -193,8 +214,8 @@ fun DeleteAllAction(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchAppBar(
-    text: String,
-    onTextChanged: (String) -> Unit,
+    textFieldValue: TextFieldValue,
+    onTextChanged: (TextFieldValue) -> Unit,
     onCloseClicked: () -> Unit,
     onSearchClicked: () -> Unit
 ) {
@@ -205,11 +226,13 @@ fun SearchAppBar(
         shadowElevation = MaterialTheme.dimens.elevationMedium,
         color = MaterialTheme.colorScheme.primary
     ) {
+        val focusRequester = remember { FocusRequester() }
         TextField(
             modifier = Modifier
-                .fillMaxWidth(),
-            value = text,
-            onValueChange = onTextChanged,
+                .fillMaxWidth()
+                .focusRequester(focusRequester),
+            value = textFieldValue,
+            onValueChange = { onTextChanged(it) },
             placeholder = {
                 Text(
                     modifier = Modifier.alpha(alphaDisabled),
@@ -233,7 +256,9 @@ fun SearchAppBar(
                 }
             },
             trailingIcon = {
-                IconButton(onClick = onCloseClicked) {
+                IconButton(
+                    onClick = onCloseClicked
+                ) {
                     Icon(
                         imageVector = Icons.Filled.Close,
                         contentDescription = stringResource(id = R.string.close_icon),
@@ -252,6 +277,10 @@ fun SearchAppBar(
                 containerColor = Color.Transparent
             )
         )
+
+        LaunchedEffect(key1 = Unit) {
+            focusRequester.requestFocus()
+        }
     }
 }
 
@@ -264,5 +293,8 @@ private fun DefaultListAppBarPreview() {
 @Preview
 @Composable
 private fun SearchAppBarPreview() {
-    SearchAppBar(text = "Keyword", onTextChanged = {}, onCloseClicked = {}, onSearchClicked = {})
+    SearchAppBar(textFieldValue = TextFieldValue(text = "Keyword"),
+        onTextChanged = {},
+        onCloseClicked = {},
+        onSearchClicked = {})
 }

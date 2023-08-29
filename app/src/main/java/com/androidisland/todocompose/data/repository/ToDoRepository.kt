@@ -9,9 +9,8 @@ import kotlinx.coroutines.flow.Flow
 @ViewModelScoped
 class ToDoRepository @Inject constructor(private val toDoDao: ToDoDao) {
 
-    val getAllTasks: Flow<List<ToDoTask>> by lazy {
-        toDoDao.getAllTasks()
-    }
+    fun getAllTasks(): Flow<List<ToDoTask>> = toDoDao.getAllTasks()
+
     val sortByLowPriority: Flow<List<ToDoTask>> by lazy {
         toDoDao.sortByLowPriority()
     }
@@ -27,6 +26,6 @@ class ToDoRepository @Inject constructor(private val toDoDao: ToDoDao) {
 
     suspend fun deleteAllTasks() = toDoDao.deleteAllTasks()
 
-    fun searchDatabase(searchQuery: String): Flow<List<ToDoTask>> =
-        toDoDao.searchDatabase(searchQuery)
+    fun searchTasks(searchQuery: String): Flow<List<ToDoTask>> =
+        toDoDao.searchTasks(searchQuery)
 }

@@ -24,7 +24,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.RectangleShape
@@ -39,7 +38,6 @@ import com.androidisland.todocompose.ui.theme.alphaDisabled
 import com.androidisland.todocompose.ui.theme.dimens
 
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun PriorityDropDown(
     priority: Priority, onPrioritySelected: (Priority) -> Unit
