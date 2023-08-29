@@ -5,19 +5,17 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.androidisland.todocompose.navigation.Actions
-import com.androidisland.todocompose.navigation.SetUpToDoAppNavigation
-import com.androidisland.todocompose.navigation.rememberSnackbarAppState
+import com.androidisland.todocompose.navigation.SetUpNavGraph
 import com.androidisland.todocompose.ui.theme.ToDoAppTheme
 import com.androidisland.todocompose.ui.viewmodel.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,16 +23,12 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private val sharedViewModel: SharedViewModel by viewModels()
     private lateinit var navController: NavHostController
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             navController = rememberNavController()
-            ToDoApp(
-                navController = navController,
-                sharedViewModel = sharedViewModel
-            )
+            ToDoApp(navController = navController)
         }
     }
 
@@ -49,23 +43,20 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun ToDoApp(
     navController: NavHostController,
-    sharedViewModel: SharedViewModel
+    sharedViewModel: SharedViewModel = hiltViewModel()
 ) {
-    val actions = remember {
-        Actions(navController)
-    }
 
     ToDoAppTheme {
-        val snackbarAppState = rememberSnackbarAppState()
+        val actions = remember {
+            Actions(navController)
+        }
         Scaffold(
-            snackbarHost = { SnackbarHost(snackbarAppState.hostState) },
             modifier = Modifier.fillMaxSize()
         ) {
-            SetUpToDoAppNavigation(
+            SetUpNavGraph(
                 navController,
                 actions,
-                sharedViewModel,
-                snackbarAppState
+                sharedViewModel
             )
         }
     }

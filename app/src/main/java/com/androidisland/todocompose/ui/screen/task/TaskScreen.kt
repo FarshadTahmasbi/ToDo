@@ -10,7 +10,8 @@ import androidx.compose.runtime.setValue
 import com.androidisland.todocompose.R
 import com.androidisland.todocompose.data.models.Priority
 import com.androidisland.todocompose.data.models.ToDoTask
-import com.androidisland.todocompose.navigation.SnackbarAppState
+import com.androidisland.todocompose.ui.common.CustomSnackbarHost
+import com.androidisland.todocompose.ui.common.rememberSnackbarState
 import com.androidisland.todocompose.ui.viewmodel.SharedViewModel
 import com.androidisland.todocompose.util.Action
 import com.androidisland.todocompose.util.Either
@@ -19,11 +20,11 @@ import com.androidisland.todocompose.util.Either
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskScreen(
-    sharedViewModel: SharedViewModel,
-    snackbarAppState: SnackbarAppState,
     toDoTask: ToDoTask?,
-    navigateToListScreen: () -> Unit
+    sharedViewModel: SharedViewModel,
+    navigateToListScreen: (Action?, ToDoTask?) -> Unit
 ) {
+    val snackbarAppState = rememberSnackbarState()
     var title by remember(toDoTask) {
         mutableStateOf(toDoTask?.title.orEmpty())
     }
@@ -41,44 +42,36 @@ fun TaskScreen(
             if (action.isEditMode() && sharedViewModel.isValid(title, description).not()) {
                 snackbarAppState.showSnackbar(message = Either.Right(R.string.empty_fields_msg))
             } else {
-                when (action) {
-                    Action.ADD -> {
-                        sharedViewModel.addTask(ToDoTask(0, title, description, priority))
-                        snackbarAppState.showSnackbar(Either.Right(R.string.task_add_msg))
-                    }
+                val task = when (action) {
+                    Action.ADD -> ToDoTask(0, title, description, priority)
+                    Action.UPDATE -> toDoTask!!.copy(
+                        title = title,
+                        description = description,
+                        priority = priority
+                    )
 
-                    Action.UPDATE -> {
-                        sharedViewModel.updateTask(
-                            toDoTask!!.copy(
-                                title = title, description = description, priority = priority
-                            )
-                        )
-                        snackbarAppState.showSnackbar(Either.Right(R.string.task_update_msg))
-                    }
-
-                    Action.DELETE -> {
-                        sharedViewModel.deleteTask(toDoTask!!)
-                        snackbarAppState.showSnackbar(Either.Right(R.string.task_delete_msg))
-                    }
-
-                    else -> Unit
+                    Action.DELETE -> toDoTask
+                    else -> null
                 }
-                navigateToListScreen()
+                navigateToListScreen(action, task)
             }
         }
     }
 
-
     Scaffold(topBar = {
-        TaskAppBar(toDoTask = toDoTask, onActionClicked = onActionClicked)
-    }, content = { padding ->
-        TaskContent(title = title, onTitleChanged = {
-            title = it
-        }, description = description, onDescriptionChanged = {
-            description = it
-        }, priority = priority, onPrioritySelected = {
-            priority = it
-        }, padding
+        TaskAppBar(
+            toDoTask = toDoTask,
+            onActionClicked = onActionClicked
         )
-    })
+    }, snackbarHost = { CustomSnackbarHost(hostState = snackbarAppState.hostState) },
+        content = { padding ->
+            TaskContent(title = title, onTitleChanged = {
+                title = it
+            }, description = description, onDescriptionChanged = {
+                description = it
+            }, priority = priority, onPrioritySelected = {
+                priority = it
+            }, padding
+            )
+        })
 }

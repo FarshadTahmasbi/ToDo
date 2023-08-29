@@ -14,6 +14,6 @@ enum class Action {
     }
 
     companion object {
-        fun from(name: String?) = values().firstOrNull { it.name == name?.uppercase() }
+        fun from(name: String) = values().firstOrNull { it.name == name.uppercase() }
     }
 }

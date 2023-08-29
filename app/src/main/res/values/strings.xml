@@ -21,4 +21,5 @@
     <string name="task_add_msg">Task is added successfully</string>
     <string name="task_update_msg">Task is updated successfully</string>
     <string name="task_delete_msg">Task is deleted successfully</string>
+    <string name="action_undo">Undo</string>
 </resources>
