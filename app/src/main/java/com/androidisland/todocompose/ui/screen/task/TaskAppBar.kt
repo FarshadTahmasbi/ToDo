@@ -24,7 +24,8 @@ import com.androidisland.todocompose.util.Action
 
 @Composable
 fun TaskAppBar(
-    toDoTask: ToDoTask?, onActionClicked: (Action) -> Unit
+    toDoTask: ToDoTask?,
+    onActionClicked: (Action) -> Unit
 ) {
     if (toDoTask == null) {
         NewTaskAppBar(onActionClicked = onActionClicked)
@@ -82,7 +83,8 @@ fun AddAction(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExistingTaskAppBar(
-    selectedTask: ToDoTask, onActionClicked: (Action) -> Unit
+    selectedTask: ToDoTask,
+    onActionClicked: (Action) -> Unit
 ) {
     TopAppBar(title = {
         Text(

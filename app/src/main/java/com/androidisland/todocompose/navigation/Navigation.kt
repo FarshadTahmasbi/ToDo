@@ -1,5 +1,6 @@
 package com.androidisland.todocompose.navigation
 
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
@@ -13,19 +14,35 @@ import com.androidisland.todocompose.data.models.ToDoTask
 import com.androidisland.todocompose.ui.screen.list.ListScreen
 import com.androidisland.todocompose.ui.screen.task.TaskScreen
 import com.androidisland.todocompose.ui.viewmodel.SharedViewModel
+import com.androidisland.todocompose.util.Either
 
 
 @Composable
 fun SetUpToDoAppNavigation(
     navController: NavHostController,
     actions: Actions,
-    sharedViewModel: SharedViewModel
+    sharedViewModel: SharedViewModel,
+    snackbarState: SnackbarState,
 ) {
+    val showSnackbar = { either: Either<String, Int> ->
+        either.fold({ message ->
+            snackbarState.showSnackbar(
+                message = message,
+                duration = SnackbarDuration.Short
+            )
+        }, { messageResId ->
+            snackbarState.showSnackbar(
+                message = messageResId,
+                duration = SnackbarDuration.Short
+            )
+        })
+    }
+
     NavHost(
         navController = navController, startDestination = Screen.TaskList.route
     ) {
         listComposable(sharedViewModel, actions.navigateToTask)
-        taskComposable(sharedViewModel, actions.navigateToTaskList)
+        taskComposable(sharedViewModel, actions.navigateToTaskList, showSnackbar)
     }
 }
 
@@ -38,7 +55,8 @@ fun NavGraphBuilder.listComposable(
         deepLinks = Screen.TaskList.deepLinks
     ) {
         ListScreen(
-            sharedViewModel = sharedViewModel, navigateToTaskScreen = navigateToTask
+            sharedViewModel = sharedViewModel,
+            navigateToTaskScreen = navigateToTask,
         )
     }
 }
@@ -46,9 +64,11 @@ fun NavGraphBuilder.listComposable(
 fun NavGraphBuilder.taskComposable(
     sharedViewModel: SharedViewModel,
     navigateToTaskList: () -> Unit,
+    showSnackbar: (Either<String, Int>) -> Unit
 ) {
     composable(
-        route = Screen.Task.route, arguments = listOf(
+        route = Screen.Task.route,
+        arguments = listOf(
             navArgument(Screen.Task.Args.taskId) {
                 type = NavType.IntType
             },
@@ -64,6 +84,6 @@ fun NavGraphBuilder.taskComposable(
             val taskId = navBackStackEntry.arguments!!.getInt(Screen.Task.Args.taskId)
             value = sharedViewModel.getTask(taskId)
         }
-        TaskScreen(task, sharedViewModel, navigateToTaskList)
+        TaskScreen(sharedViewModel, showSnackbar, task, navigateToTaskList)
     }
 }

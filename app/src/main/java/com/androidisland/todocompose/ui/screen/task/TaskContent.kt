@@ -3,12 +3,12 @@ package com.androidisland.todocompose.ui.screen.task
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -53,14 +53,12 @@ fun TaskContent(
                 imeAction = ImeAction.Next
             )
         )
-        Divider(
+        Spacer(
             modifier = Modifier.height(MaterialTheme.dimens.smallPadding),
-            color = MaterialTheme.colorScheme.background
         )
         PriorityDropDown(priority = priority, onPrioritySelected = onPrioritySelected)
-        Divider(
+        Spacer(
             modifier = Modifier.height(MaterialTheme.dimens.smallPadding),
-            color = MaterialTheme.colorScheme.background
         )
         OutlinedTextField(
             modifier = Modifier.fillMaxSize(),

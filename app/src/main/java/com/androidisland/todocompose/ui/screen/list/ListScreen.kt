@@ -9,22 +9,27 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.androidisland.todocompose.R
 import com.androidisland.todocompose.ui.theme.ToDoAppTheme
 import com.androidisland.todocompose.ui.viewmodel.SharedViewModel
+import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListScreen(
     sharedViewModel: SharedViewModel,
-    navigateToTaskScreen: (Int) -> Unit
+    navigateToTaskScreen: (Int) -> Unit,
 ) {
     val allTasksResource by sharedViewModel.allTasks.collectAsState()
 
@@ -42,13 +47,14 @@ fun ListScreen(
                 //TODO search for it
                 Log.d("test123", "Searching for $it")
             })
-    }, content = {
-        ListContent(
-            tasksResource = allTasksResource,
-            navigateToTaskScreen = navigateToTaskScreen,
-            contentPadding = it
-        )
-    }, floatingActionButton = { ListFab(navigateToTaskScreen) })
+    },
+        content = {
+            ListContent(
+                tasksResource = allTasksResource,
+                navigateToTaskScreen = navigateToTaskScreen,
+                contentPadding = it
+            )
+        }, floatingActionButton = { ListFab(navigateToTaskScreen) })
 }
 
 @Composable
@@ -72,4 +78,31 @@ private fun ListScreenPreview() {
     ToDoAppTheme {
         ListScreen(hiltViewModel(), navigateToTaskScreen = {})
     }
+}
+
+@Composable
+fun DisplaySnackBar(
+    snackbarHostState: SnackbarHostState, message: String?
+) {
+    val scope = rememberCoroutineScope()
+    LaunchedEffect(key1 = message) {
+        if (message != null) {
+            snackbarHostState.currentSnackbarData?.dismiss()
+            scope.launch {
+                snackbarHostState.showSnackbar(
+                    message = message, duration = SnackbarDuration.Short
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun DisplaySnackBar(
+    snackbarHostState: SnackbarHostState, messageResId: Int?
+) {
+    val message = messageResId?.let { stringResource(id = it) }
+    DisplaySnackBar(
+        snackbarHostState = snackbarHostState, message = message
+    )
 }

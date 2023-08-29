@@ -42,4 +42,7 @@ class SharedViewModel @Inject constructor(private val repository: ToDoRepository
         }
     }
 
+    fun isValid(title: String, description: String): Boolean {
+        return title.isNotEmpty() && description.isNotEmpty()
+    }
 }
