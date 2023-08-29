@@ -1,5 +1,7 @@
 package com.androidisland.todocompose.navigation
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
@@ -9,6 +11,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.androidisland.todocompose.data.models.Priority
 import com.androidisland.todocompose.data.models.ToDoTask
 import com.androidisland.todocompose.data.models.ToDoTaskNavType
 import com.androidisland.todocompose.ext.getParcelableCompat
@@ -48,10 +51,10 @@ fun NavGraphBuilder.listComposable(
                 nullable = true
             }
         ),
-//        enterTransition = { EnterTransition.None },
-//        exitTransition = { ExitTransition.None },
-//        popEnterTransition = { EnterTransition.None },
-//        popExitTransition = { ExitTransition.None },
+        enterTransition = { EnterTransition.None },
+        exitTransition = { ExitTransition.None },
+        popEnterTransition = { EnterTransition.None },
+        popExitTransition = { ExitTransition.None },
         deepLinks = Screen.TaskList.deepLinks
     ) { navBackStackEntry ->
         val action = navBackStackEntry.arguments?.getString(Screen.TaskList.Args.action)
@@ -78,14 +81,17 @@ fun NavGraphBuilder.taskComposable(
                 type = NavType.IntType
             }
         ),
-//        enterTransition = { EnterTransition.None },
-//        exitTransition = { ExitTransition.None },
-//        popEnterTransition = { EnterTransition.None },
-//        popExitTransition = { ExitTransition.None },
+        enterTransition = { EnterTransition.None },
+        exitTransition = { ExitTransition.None },
+        popEnterTransition = { EnterTransition.None },
+        popExitTransition = { ExitTransition.None },
         deepLinks = Screen.Task.deepLinks
     ) { navBackStackEntry ->
-        val task by produceState<ToDoTask?>(initialValue = null) {
-            val taskId = navBackStackEntry.arguments!!.getInt(Screen.Task.Args.taskId)
+        val taskId = navBackStackEntry.arguments!!.getInt(Screen.Task.Args.taskId)
+        //Here If I get a valid task id, I pass a fake tak as initial value until the real one is loaded
+        //In this way, compose picks the right toolbar at first composition!
+        val initialTask = if (taskId > 0) ToDoTask(0, "", "", Priority.LOW) else null
+        val task by produceState(initialValue = initialTask) {
             value = sharedViewModel.getTask(taskId)
         }
         TaskScreen(

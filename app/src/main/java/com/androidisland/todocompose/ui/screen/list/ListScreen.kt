@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -39,11 +40,7 @@ fun ListScreen(
     val allTasksResource by viewModel.allTasks.collectAsState()
     val snackbarAppState = rememberSnackbarState()
 
-    LaunchedEffect(key1 = Unit) {
-        if (action != null && toDoTask != null) {
-            handleAction(action, toDoTask, snackbarAppState, viewModel)
-        }
-    }
+    HandleActionLaunchedEffect(action, toDoTask, snackbarAppState, viewModel)
 
     Scaffold(topBar = {
         ListAppBar(onSortClicked = {
@@ -96,39 +93,45 @@ private fun ListScreenPreview() {
     }
 }
 
-private fun handleAction(
-    action: Action,
-    toDoTask: ToDoTask,
+@Composable
+private fun HandleActionLaunchedEffect(
+    action: Action?,
+    toDoTask: ToDoTask?,
     snackbarState: SnackbarState,
     viewModel: SharedViewModel
 ) {
-    snackbarState.dismiss()
-    when (action) {
-        Action.ADD -> {
-            viewModel.addTask(toDoTask)
-            snackbarState.showSnackbar(Either.Right(R.string.task_add_msg))
-        }
+    if (action == null || toDoTask == null) return
+    val context = LocalContext.current
+    LaunchedEffect(key1 = action, key2 = toDoTask) {
+        snackbarState.dismiss()
+        when (action) {
+            Action.ADD -> {
+                viewModel.addTask(toDoTask)
+                snackbarState.showSnackbar(Either.Right(R.string.task_add_msg))
+            }
 
-        Action.UPDATE -> {
-            viewModel.updateTask(toDoTask)
-            snackbarState.showSnackbar(Either.Right(R.string.task_update_msg))
-        }
+            Action.UPDATE -> {
+                viewModel.updateTask(toDoTask)
+                snackbarState.showSnackbar(Either.Right(R.string.task_update_msg))
+            }
 
-        Action.DELETE -> {
-            viewModel.deleteTask(toDoTask)
-            snackbarState.showSnackbar(
-                Either.Right(R.string.task_delete_msg), actionLabel = "Undo"
-            ) { result ->
-                if (result == SnackbarResult.ActionPerformed) {
-                    viewModel.addTask(toDoTask)
+            Action.DELETE -> {
+                viewModel.deleteTask(toDoTask)
+                snackbarState.showSnackbar(
+                    Either.Right(R.string.task_delete_msg),
+                    actionLabel = context.getString(R.string.action_undo)
+                ) { result ->
+                    if (result == SnackbarResult.ActionPerformed) {
+                        viewModel.addTask(toDoTask)
+                    }
                 }
             }
+
+            Action.DELETE_ALL -> {
+
+            }
+
+            else -> Unit
         }
-
-        Action.DELETE_ALL -> {
-
-        }
-
-        else -> Unit
     }
 }
