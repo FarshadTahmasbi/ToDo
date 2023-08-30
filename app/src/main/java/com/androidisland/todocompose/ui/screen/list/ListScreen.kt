@@ -20,13 +20,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.androidisland.todocompose.R
-import com.androidisland.todocompose.data.models.ToDoTask
 import com.androidisland.todocompose.ui.common.CustomSnackbarHost
 import com.androidisland.todocompose.ui.common.SnackbarState
 import com.androidisland.todocompose.ui.common.rememberSnackbarState
 import com.androidisland.todocompose.ui.theme.ToDoAppTheme
 import com.androidisland.todocompose.ui.viewmodel.SharedViewModel
 import com.androidisland.todocompose.util.Action
+import com.androidisland.todocompose.util.ActionEvent
 import com.androidisland.todocompose.util.Either
 
 
@@ -41,8 +41,8 @@ fun ListScreen(
     val searchQuery by viewModel.searchQuery.collectAsState()
 
     val context = LocalContext.current
-    val action by viewModel.action.collectAsState(initial = null)
-    ActionEventsLaunchedEffect(context, action, snackbarAppState, viewModel)
+    val actionEvent by viewModel.action.collectAsState(initial = null)
+    ActionEventsLaunchedEffect(context, actionEvent, snackbarAppState, viewModel)
 
     Scaffold(
         topBar = {
@@ -54,12 +54,12 @@ fun ListScreen(
                 }, onDeleteClicked = {
                     //TODO delete
                     Log.d("test123", "Delete")
-            }, onSearchClicked = {
-                viewModel.queryTasks(it)
-            }, onCloseClicked = {
-                viewModel.queryTasks(null)
-            })
-    },
+                }, onSearchClicked = {
+                    viewModel.queryTasks(it)
+                }, onCloseClicked = {
+                    viewModel.queryTasks(null)
+                })
+        },
         snackbarHost = { CustomSnackbarHost(hostState = snackbarAppState.hostState) },
         content = {
             ListContent(
@@ -100,7 +100,7 @@ private fun ListScreenPreview() {
 @Composable
 private fun ActionEventsLaunchedEffect(
     context: Context,
-    event: Pair<Action, ToDoTask>?,
+    event: ActionEvent?,
     snackbarState: SnackbarState,
     viewModel: SharedViewModel
 ) {
@@ -127,13 +127,8 @@ private fun ActionEventsLaunchedEffect(
                 ) { result ->
                     if (result == SnackbarResult.ActionPerformed) {
                         viewModel.addTask(toDoTask)
-//                        viewModel.sendActionEvent(action , toDoTask)
                     }
                 }
-            }
-
-            Action.UNDO -> {
-                viewModel.addTask(toDoTask)
             }
 
             Action.DELETE_ALL -> {

@@ -6,6 +6,7 @@ import com.androidisland.todocompose.data.models.ToDoTask
 import com.androidisland.todocompose.data.repository.ToDoRepository
 import com.androidisland.todocompose.thread.CoroutineDispatchers
 import com.androidisland.todocompose.util.Action
+import com.androidisland.todocompose.util.ActionEvent
 import com.androidisland.todocompose.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -38,8 +39,8 @@ class SharedViewModel @Inject constructor(
     private val _searchQuery: MutableStateFlow<String?> = MutableStateFlow(null)
     val searchQuery: StateFlow<String?> = _searchQuery
 
-    private val actionChannel = Channel<Pair<Action, ToDoTask>?>(Channel.BUFFERED)
-    val action: Flow<Pair<Action, ToDoTask>?> = actionChannel.receiveAsFlow()
+    private val actionChannel = Channel<ActionEvent?>(Channel.BUFFERED)
+    val action: Flow<ActionEvent?> = actionChannel.receiveAsFlow()
 
     init {
         collectQueryResult()
@@ -92,6 +93,6 @@ class SharedViewModel @Inject constructor(
     }
 
     fun sendActionEvent(action: Action, toDoTask: ToDoTask) {
-        actionChannel.trySend(action to toDoTask)
+        actionChannel.trySend(ActionEvent(action, toDoTask))
     }
 }
