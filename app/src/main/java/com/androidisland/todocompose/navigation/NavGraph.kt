@@ -5,6 +5,7 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -77,7 +78,7 @@ fun NavGraphBuilder.taskComposable(
         }
         TaskScreen(
             task,
-            sharedViewModel,
+            hiltViewModel(),
             navigateToTaskList
         )
     }

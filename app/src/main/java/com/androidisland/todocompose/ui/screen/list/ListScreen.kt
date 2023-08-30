@@ -41,7 +41,7 @@ fun ListScreen(
     val searchQuery by viewModel.searchQuery.collectAsState()
 
     val context = LocalContext.current
-    val actionEvent by viewModel.action.collectAsState(initial = null)
+    val actionEvent by viewModel.actionEvent.collectAsState(initial = null)
     ActionEventsLaunchedEffect(context, actionEvent, snackbarAppState, viewModel)
 
     Scaffold(

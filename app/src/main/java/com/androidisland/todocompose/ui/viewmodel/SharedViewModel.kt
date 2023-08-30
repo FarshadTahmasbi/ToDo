@@ -5,13 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.androidisland.todocompose.data.models.ToDoTask
 import com.androidisland.todocompose.data.repository.ToDoRepository
 import com.androidisland.todocompose.thread.CoroutineDispatchers
-import com.androidisland.todocompose.util.Action
 import com.androidisland.todocompose.util.ActionEvent
 import com.androidisland.todocompose.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,11 +21,11 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 @HiltViewModel
 class SharedViewModel @Inject constructor(
+    val actionEvent: Flow<ActionEvent?>,
     private val repository: ToDoRepository,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
@@ -38,9 +36,6 @@ class SharedViewModel @Inject constructor(
 
     private val _searchQuery: MutableStateFlow<String?> = MutableStateFlow(null)
     val searchQuery: StateFlow<String?> = _searchQuery
-
-    private val actionChannel = Channel<ActionEvent?>(Channel.BUFFERED)
-    val action: Flow<ActionEvent?> = actionChannel.receiveAsFlow()
 
     init {
         collectQueryResult()
@@ -86,13 +81,5 @@ class SharedViewModel @Inject constructor(
         viewModelScope.launch(dispatchers.io) {
             repository.deleteTask(toDoTask)
         }
-    }
-
-    fun isValid(title: String, description: String): Boolean {
-        return title.isNotEmpty() && description.isNotEmpty()
-    }
-
-    fun sendActionEvent(action: Action, toDoTask: ToDoTask) {
-        actionChannel.trySend(ActionEvent(action, toDoTask))
     }
 }

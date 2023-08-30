@@ -7,12 +7,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.androidisland.todocompose.R
 import com.androidisland.todocompose.data.models.Priority
 import com.androidisland.todocompose.data.models.ToDoTask
 import com.androidisland.todocompose.ui.common.CustomSnackbarHost
 import com.androidisland.todocompose.ui.common.rememberSnackbarState
-import com.androidisland.todocompose.ui.viewmodel.SharedViewModel
+import com.androidisland.todocompose.ui.viewmodel.TaskViewModel
 import com.androidisland.todocompose.util.Action
 import com.androidisland.todocompose.util.Either
 
@@ -21,7 +22,7 @@ import com.androidisland.todocompose.util.Either
 @Composable
 fun TaskScreen(
     toDoTask: ToDoTask?,
-    sharedViewModel: SharedViewModel,
+    taskViewModel: TaskViewModel = hiltViewModel(),
     navigateToListScreen: () -> Unit
 ) {
     val snackbarAppState = rememberSnackbarState()
@@ -39,7 +40,7 @@ fun TaskScreen(
 
     val onActionClicked: (Action) -> Unit = remember(toDoTask) {
         { action: Action ->
-            if (action.isEditMode() && sharedViewModel.isValid(title, description).not()) {
+            if (action.isEditMode() && taskViewModel.isValid(title, description).not()) {
                 snackbarAppState.showSnackbar(message = Either.Right(R.string.empty_fields_msg))
             } else {
                 val task = when (action) {
@@ -54,7 +55,7 @@ fun TaskScreen(
                     else -> null
                 }
                 if (task != null) {
-                    sharedViewModel.sendActionEvent(action, task)
+                    taskViewModel.sendActionEvent(action, task)
                 }
                 navigateToListScreen()
             }
