@@ -22,7 +22,7 @@ import com.androidisland.todocompose.util.Either
 fun TaskScreen(
     toDoTask: ToDoTask?,
     sharedViewModel: SharedViewModel,
-    navigateToListScreen: (Action?, ToDoTask?) -> Unit
+    navigateToListScreen: () -> Unit
 ) {
     val snackbarAppState = rememberSnackbarState()
     var title by remember(toDoTask) {
@@ -53,7 +53,10 @@ fun TaskScreen(
                     Action.DELETE -> toDoTask
                     else -> null
                 }
-                navigateToListScreen(action, task)
+                if (task != null) {
+                    sharedViewModel.sendActionEvent(action, task)
+                }
+                navigateToListScreen()
             }
         }
     }

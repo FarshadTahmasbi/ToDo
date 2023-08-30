@@ -13,12 +13,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.androidisland.todocompose.data.models.Priority
 import com.androidisland.todocompose.data.models.ToDoTask
-import com.androidisland.todocompose.data.models.ToDoTaskNavType
-import com.androidisland.todocompose.ext.getParcelableCompat
 import com.androidisland.todocompose.ui.screen.list.ListScreen
 import com.androidisland.todocompose.ui.screen.task.TaskScreen
 import com.androidisland.todocompose.ui.viewmodel.SharedViewModel
-import com.androidisland.todocompose.util.Action
 
 
 @Composable
@@ -41,29 +38,13 @@ fun NavGraphBuilder.listComposable(
 ) {
     composable(
         route = Screen.TaskList.route,
-        arguments = listOf(
-            navArgument(Screen.TaskList.Args.action) {
-                type = NavType.StringType
-                nullable = true
-            },
-            navArgument(Screen.TaskList.Args.task) {
-                type = ToDoTaskNavType()
-                nullable = true
-            }
-        ),
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None },
         popEnterTransition = { EnterTransition.None },
         popExitTransition = { ExitTransition.None },
         deepLinks = Screen.TaskList.deepLinks
-    ) { navBackStackEntry ->
-        val action = navBackStackEntry.arguments?.getString(Screen.TaskList.Args.action)
-            ?.let { Action.from(it) }
-        val toDoTask =
-            navBackStackEntry.arguments?.getParcelableCompat<ToDoTask>(Screen.TaskList.Args.task)
+    ) {
         ListScreen(
-            action = action,
-            toDoTask = toDoTask,
             viewModel = sharedViewModel,
             navigateToTaskScreen = navigateToTask
         )
@@ -72,7 +53,7 @@ fun NavGraphBuilder.listComposable(
 
 fun NavGraphBuilder.taskComposable(
     sharedViewModel: SharedViewModel,
-    navigateToTaskList: (Action?, ToDoTask?) -> Unit
+    navigateToTaskList: () -> Unit
 ) {
     composable(
         route = Screen.Task.route,
