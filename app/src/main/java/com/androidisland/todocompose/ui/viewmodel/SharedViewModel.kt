@@ -5,11 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.androidisland.todocompose.data.models.ToDoTask
 import com.androidisland.todocompose.data.repository.ToDoRepository
 import com.androidisland.todocompose.thread.CoroutineDispatchers
+import com.androidisland.todocompose.util.Action
 import com.androidisland.todocompose.util.ActionEvent
 import com.androidisland.todocompose.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,6 +28,7 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class SharedViewModel @Inject constructor(
     val actionEvent: Flow<ActionEvent?>,
+    private val actionEventChannel: Channel<ActionEvent?>,
     private val repository: ToDoRepository,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
@@ -80,6 +83,16 @@ class SharedViewModel @Inject constructor(
     fun deleteTask(toDoTask: ToDoTask) {
         viewModelScope.launch(dispatchers.io) {
             repository.deleteTask(toDoTask)
+        }
+    }
+
+    fun onDeleteAllTasksClicked() {
+        actionEventChannel.trySend(ActionEvent(Action.DELETE_ALL, null))
+    }
+
+    fun deleteAllTasks() {
+        viewModelScope.launch(dispatchers.io) {
+            repository.deleteAllTasks()
         }
     }
 }

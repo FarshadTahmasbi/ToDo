@@ -46,7 +46,7 @@ fun NavGraphBuilder.listComposable(
         deepLinks = Screen.TaskList.deepLinks
     ) {
         ListScreen(
-            viewModel = sharedViewModel,
+            sharedViewModel = sharedViewModel,
             navigateToTaskScreen = navigateToTask
         )
     }

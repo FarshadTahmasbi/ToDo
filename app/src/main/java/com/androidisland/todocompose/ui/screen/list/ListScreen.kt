@@ -33,16 +33,16 @@ import com.androidisland.todocompose.util.Either
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListScreen(
-    viewModel: SharedViewModel,
+    sharedViewModel: SharedViewModel,
     navigateToTaskScreen: (Int) -> Unit
 ) {
-    val taskQueryResult by viewModel.queriedTasks.collectAsState()
+    val taskQueryResult by sharedViewModel.queriedTasks.collectAsState()
     val snackbarAppState = rememberSnackbarState()
-    val searchQuery by viewModel.searchQuery.collectAsState()
+    val searchQuery by sharedViewModel.searchQuery.collectAsState()
 
     val context = LocalContext.current
-    val actionEvent by viewModel.actionEvent.collectAsState(initial = null)
-    ActionEventsLaunchedEffect(context, actionEvent, snackbarAppState, viewModel)
+    val actionEvent by sharedViewModel.actionEvent.collectAsState(initial = null)
+    ActionEventsLaunchedEffect(context, actionEvent, snackbarAppState, sharedViewModel)
 
     Scaffold(
         topBar = {
@@ -51,13 +51,12 @@ fun ListScreen(
                 onSortClicked = {
                     //TODO sort
                     Log.d("test123", "Sort: $it")
-                }, onDeleteClicked = {
-                    //TODO delete
-                    Log.d("test123", "Delete")
+                }, onDeleteAllClicked = {
+                    sharedViewModel.onDeleteAllTasksClicked()
                 }, onSearchClicked = {
-                    viewModel.queryTasks(it)
+                    sharedViewModel.queryTasks(it)
                 }, onCloseClicked = {
-                    viewModel.queryTasks(null)
+                    sharedViewModel.queryTasks(null)
                 })
         },
         snackbarHost = { CustomSnackbarHost(hostState = snackbarAppState.hostState) },
@@ -91,7 +90,7 @@ fun ListFab(
 private fun ListScreenPreview() {
     ToDoAppTheme {
         ListScreen(
-            viewModel = hiltViewModel(),
+            sharedViewModel = hiltViewModel(),
             navigateToTaskScreen = {},
         )
     }
@@ -110,17 +109,17 @@ private fun ActionEventsLaunchedEffect(
         val (action, toDoTask) = event
         when (action) {
             Action.ADD -> {
-                viewModel.addTask(toDoTask)
+                viewModel.addTask(toDoTask!!)
                 snackbarState.showSnackbar(Either.Right(R.string.task_add_msg))
             }
 
             Action.UPDATE -> {
-                viewModel.updateTask(toDoTask)
+                viewModel.updateTask(toDoTask!!)
                 snackbarState.showSnackbar(Either.Right(R.string.task_update_msg))
             }
 
             Action.DELETE -> {
-                viewModel.deleteTask(toDoTask)
+                viewModel.deleteTask(toDoTask!!)
                 snackbarState.showSnackbar(
                     Either.Right(R.string.task_delete_msg),
                     actionLabel = context.getString(R.string.action_undo)
@@ -132,7 +131,15 @@ private fun ActionEventsLaunchedEffect(
             }
 
             Action.DELETE_ALL -> {
-
+                viewModel.deleteAllTasks()
+                snackbarState.showSnackbar(
+                    R.string.delete_all_msg,
+                    actionLabel = context.getString(R.string.action_ok)
+                ) { result ->
+                    if (result == SnackbarResult.ActionPerformed) {
+                        snackbarState.dismiss()
+                    }
+                }
             }
 
             else -> Unit

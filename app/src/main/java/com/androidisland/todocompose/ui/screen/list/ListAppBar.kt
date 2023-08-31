@@ -53,7 +53,7 @@ import com.androidisland.todocompose.util.SearchAppBarState
 fun ListAppBar(
     searchQuery: String?,
     onSortClicked: (Priority) -> Unit,
-    onDeleteClicked: () -> Unit,
+    onDeleteAllClicked: () -> Unit,
     onSearchClicked: (String) -> Unit,
     onCloseClicked: () -> Unit
 ) {
@@ -84,7 +84,7 @@ fun ListAppBar(
             DefaultListAppBar(
                 onSearchClicked = {
                     searchAppBarState = SearchAppBarState.OPENED
-                }, onSortClicked = onSortClicked, onDeleteClicked = onDeleteClicked
+                }, onSortClicked = onSortClicked, onDeleteAllClicked = onDeleteAllClicked
             )
         }
 
@@ -109,7 +109,9 @@ fun ListAppBar(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DefaultListAppBar(
-    onSearchClicked: () -> Unit, onSortClicked: (Priority) -> Unit, onDeleteClicked: () -> Unit
+    onSearchClicked: () -> Unit,
+    onSortClicked: (Priority) -> Unit,
+    onDeleteAllClicked: () -> Unit
 ) {
     TopAppBar(title = {
         Text(
@@ -123,18 +125,20 @@ fun DefaultListAppBar(
         ListAppBarActions(
             onSearchClicked = onSearchClicked,
             onSortClicked = onSortClicked,
-            onDeleteClicked = onDeleteClicked
+            onDeleteAllClicked = onDeleteAllClicked
         )
     })
 }
 
 @Composable
 fun ListAppBarActions(
-    onSearchClicked: () -> Unit, onSortClicked: (Priority) -> Unit, onDeleteClicked: () -> Unit
+    onSearchClicked: () -> Unit,
+    onSortClicked: (Priority) -> Unit,
+    onDeleteAllClicked: () -> Unit
 ) {
     SearchAction(onSearchClicked = onSearchClicked)
     SortAction(onSortClicked = onSortClicked)
-    DeleteAllAction(onDeleteClicked = onDeleteClicked)
+    DeleteAllAction(onDeleteAllClicked = onDeleteAllClicked)
 }
 
 @Composable
@@ -185,7 +189,7 @@ fun SortAction(
 
 @Composable
 fun DeleteAllAction(
-    onDeleteClicked: () -> Unit
+    onDeleteAllClicked: () -> Unit
 ) {
     var expanded by remember {
         mutableStateOf(false)
@@ -200,7 +204,7 @@ fun DeleteAllAction(
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             DropdownMenuItem(onClick = {
                 expanded = false
-                onDeleteClicked()
+                onDeleteAllClicked()
             }, text = {
                 Text(
                     modifier = Modifier.padding(start = MaterialTheme.dimens.largePadding),
@@ -287,7 +291,7 @@ fun SearchAppBar(
 @Preview
 @Composable
 private fun DefaultListAppBarPreview() {
-    DefaultListAppBar(onSearchClicked = {}, onSortClicked = {}, onDeleteClicked = {})
+    DefaultListAppBar(onSearchClicked = {}, onSortClicked = {}, onDeleteAllClicked = {})
 }
 
 @Preview
