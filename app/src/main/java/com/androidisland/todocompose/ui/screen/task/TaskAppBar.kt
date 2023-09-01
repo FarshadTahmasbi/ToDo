@@ -129,7 +129,7 @@ fun ExistingTaskAppBarActions(
     selectedTask: ToDoTask,
     onActionClicked: (Action) -> Unit
 ) {
-    var isDialogOpen by rememberSaveable {
+    var isDialogVisible by rememberSaveable {
         mutableStateOf(false)
     }
 
@@ -146,13 +146,13 @@ fun ExistingTaskAppBarActions(
 
     DisplayAlertDialog(title = stringResource(id = R.string.delete_task_confirm_title),
         message = message,
-        openDialog = isDialogOpen,
-        closeDialog = { isDialogOpen = false }) {
+        isDialogVisible = isDialogVisible,
+        closeDialog = { isDialogVisible = false }) {
         onActionClicked(Action.DELETE)
     }
 
     DeleteAction(onDeleteClicked = {
-        isDialogOpen = true
+        isDialogVisible = true
     })
     UpdateAction(onUpdateClicked = onActionClicked)
 }

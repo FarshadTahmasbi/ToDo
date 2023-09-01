@@ -36,12 +36,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import com.androidisland.todocompose.R
+import com.androidisland.todocompose.component.DisplayAlertDialog
 import com.androidisland.todocompose.component.PriorityItem
 import com.androidisland.todocompose.data.models.Priority
 import com.androidisland.todocompose.ui.theme.alphaDisabled
@@ -57,11 +59,6 @@ fun ListAppBar(
     onSearchClicked: (String) -> Unit,
     onCloseClicked: () -> Unit
 ) {
-
-//    var searchQueryState by rememberSaveable {
-//        mutableStateOf(searchQuery.orEmpty())
-//    }
-
     var searchQueryState by remember {
         val initialValue = searchQuery.orEmpty()
         mutableStateOf(
@@ -136,9 +133,20 @@ fun ListAppBarActions(
     onSortClicked: (Priority) -> Unit,
     onDeleteAllClicked: () -> Unit
 ) {
+    var isDialogVisible by remember {
+        mutableStateOf(false)
+    }
+
+    DisplayAlertDialog(title = stringResource(id = R.string.delete_all_task_confirm_title),
+        message = AnnotatedString(stringResource(id = R.string.delete_all_task_confirm_msg)),
+        isDialogVisible = isDialogVisible,
+        closeDialog = { isDialogVisible = false }) {
+        onDeleteAllClicked()
+    }
+
     SearchAction(onSearchClicked = onSearchClicked)
     SortAction(onSortClicked = onSortClicked)
-    DeleteAllAction(onDeleteAllClicked = onDeleteAllClicked)
+    DeleteAllAction(onDeleteAllClicked = { isDialogVisible = true })
 }
 
 @Composable

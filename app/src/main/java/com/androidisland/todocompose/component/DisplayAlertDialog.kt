@@ -16,11 +16,11 @@ import com.androidisland.todocompose.R
 fun DisplayAlertDialog(
     title: String,
     message: AnnotatedString,
-    openDialog: Boolean,
+    isDialogVisible: Boolean,
     closeDialog: () -> Unit,
     onConfirm: () -> Unit,
 ) {
-    if (openDialog) {
+    if (isDialogVisible) {
         AlertDialog(
             containerColor = MaterialTheme.colorScheme.background,
             title = {
@@ -68,7 +68,7 @@ fun DisplayAlertDialogPreview() {
     DisplayAlertDialog(
         title = "Delete",
         message = buildAnnotatedString { append("Are you sure?") },
-        openDialog = true,
+        isDialogVisible = true,
         closeDialog = {},
         onConfirm = {})
 }
