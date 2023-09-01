@@ -106,4 +106,7 @@ dependencies {
 
     //Serialization
     implementation("com.google.code.gson:gson:2.10.1")
+
+    //Datastore
+    implementation("androidx.datastore:datastore:1.0.0")
 }

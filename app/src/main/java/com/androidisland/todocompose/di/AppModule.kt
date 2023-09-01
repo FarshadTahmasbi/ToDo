@@ -1,10 +1,15 @@
 package com.androidisland.todocompose.di
 
+import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import com.androidisland.todocompose.ext.dataStore
 import com.androidisland.todocompose.thread.CoroutineDispatchers
 import com.androidisland.todocompose.util.ActionEvent
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
@@ -15,6 +20,12 @@ import kotlinx.coroutines.flow.receiveAsFlow
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
+    @Provides
+    @Singleton
+    fun provideDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
+        context.dataStore
+
     @Provides
     @Singleton
     fun provideCoroutineDispatchers() =

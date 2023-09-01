@@ -3,6 +3,7 @@ package com.androidisland.todocompose.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.androidisland.todocompose.data.models.ToDoTask
+import com.androidisland.todocompose.data.repository.DataStoreRepository
 import com.androidisland.todocompose.data.repository.ToDoRepository
 import com.androidisland.todocompose.thread.CoroutineDispatchers
 import com.androidisland.todocompose.util.Action
@@ -27,10 +28,11 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class SharedViewModel @Inject constructor(
+    private val dispatchers: CoroutineDispatchers,
     val actionEvent: Flow<ActionEvent?>,
     private val actionEventChannel: Channel<ActionEvent?>,
     private val repository: ToDoRepository,
-    private val dispatchers: CoroutineDispatchers
+    private val dataStoreRepository: DataStoreRepository
 ) : ViewModel() {
 
     private val _queriedTasks: MutableStateFlow<Resource<List<ToDoTask>>> =
