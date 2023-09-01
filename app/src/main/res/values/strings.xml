@@ -24,4 +24,8 @@
     <string name="delete_all_msg">All tasks are deleted</string>
     <string name="action_undo">Undo</string>
     <string name="action_ok">OK</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="delete_task_confirm_title">Delete Task</string>
+    <string name="delete_task_confirm_msg">Are you sure you want to remove \'%1$s\'?</string>
 </resources>

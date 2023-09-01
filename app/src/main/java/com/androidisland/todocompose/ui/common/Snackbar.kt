@@ -101,7 +101,9 @@ fun CustomSnackbarHost(
     modifier: Modifier = Modifier,
     hostState: SnackbarHostState,
     alignment: Alignment = Alignment.BottomCenter,
-    snackbar: @Composable (SnackbarData) -> Unit = { Snackbar(it) }
+    snackbar: @Composable (SnackbarData) -> Unit = {
+        Snackbar(it)
+    }
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),

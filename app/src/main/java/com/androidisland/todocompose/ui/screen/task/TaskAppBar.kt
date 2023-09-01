@@ -13,10 +13,18 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.androidisland.todocompose.R
+import com.androidisland.todocompose.component.DisplayAlertDialog
 import com.androidisland.todocompose.data.models.Priority
 import com.androidisland.todocompose.data.models.ToDoTask
 import com.androidisland.todocompose.util.Action
@@ -99,8 +107,7 @@ fun ExistingTaskAppBar(
         containerColor = MaterialTheme.colorScheme.primary,
         titleContentColor = MaterialTheme.colorScheme.onPrimary
     ), actions = {
-        DeleteAction(onDeleteClicked = onActionClicked)
-        UpdateAction(onUpdateClicked = onActionClicked)
+        ExistingTaskAppBarActions(selectedTask, onActionClicked)
     })
 }
 
@@ -115,6 +122,39 @@ fun CloseAction(
             tint = MaterialTheme.colorScheme.onPrimary
         )
     }
+}
+
+@Composable
+fun ExistingTaskAppBarActions(
+    selectedTask: ToDoTask,
+    onActionClicked: (Action) -> Unit
+) {
+    var isDialogOpen by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    val message = buildAnnotatedString {
+        val original = stringResource(id = R.string.delete_task_confirm_msg, selectedTask.title)
+        append(original)
+        val start = original.indexOf(selectedTask.title)
+        addStyle(
+            style = SpanStyle(fontWeight = FontWeight.Bold),
+            start = start,
+            end = start + selectedTask.title.length
+        )
+    }
+
+    DisplayAlertDialog(title = stringResource(id = R.string.delete_task_confirm_title),
+        message = message,
+        openDialog = isDialogOpen,
+        closeDialog = { isDialogOpen = false }) {
+        onActionClicked(Action.DELETE)
+    }
+
+    DeleteAction(onDeleteClicked = {
+        isDialogOpen = true
+    })
+    UpdateAction(onUpdateClicked = onActionClicked)
 }
 
 @Composable

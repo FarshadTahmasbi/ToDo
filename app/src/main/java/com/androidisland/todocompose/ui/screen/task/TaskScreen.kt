@@ -13,6 +13,7 @@ import com.androidisland.todocompose.data.models.Priority
 import com.androidisland.todocompose.data.models.ToDoTask
 import com.androidisland.todocompose.ui.common.CustomSnackbarHost
 import com.androidisland.todocompose.ui.common.rememberSnackbarState
+import com.androidisland.todocompose.ui.viewmodel.SharedViewModel
 import com.androidisland.todocompose.ui.viewmodel.TaskViewModel
 import com.androidisland.todocompose.util.Action
 import com.androidisland.todocompose.util.Either
@@ -23,6 +24,7 @@ import com.androidisland.todocompose.util.Either
 fun TaskScreen(
     toDoTask: ToDoTask?,
     taskViewModel: TaskViewModel = hiltViewModel(),
+    sharedViewModel: SharedViewModel,
     navigateToListScreen: () -> Unit
 ) {
     val snackbarAppState = rememberSnackbarState()
@@ -55,7 +57,7 @@ fun TaskScreen(
                     else -> null
                 }
                 if (task != null) {
-                    taskViewModel.sendActionEvent(action, task)
+                    sharedViewModel.sendActionEvent(action, task)
                 }
                 navigateToListScreen()
             }

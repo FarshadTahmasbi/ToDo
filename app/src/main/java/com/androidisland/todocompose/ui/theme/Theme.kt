@@ -37,7 +37,7 @@ private val LightColorScheme = lightColorScheme(
     primaryContainer = Teal200,
     surface = LightGray,
     onSurface = Color.Black,
-    background = LightGray,
+    background = Color.White,
     onBackground = Color.Black,
     inverseOnSurface = MediumGray
 

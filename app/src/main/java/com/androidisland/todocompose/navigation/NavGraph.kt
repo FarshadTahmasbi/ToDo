@@ -79,6 +79,7 @@ fun NavGraphBuilder.taskComposable(
         TaskScreen(
             task,
             hiltViewModel(),
+            sharedViewModel,
             navigateToTaskList
         )
     }

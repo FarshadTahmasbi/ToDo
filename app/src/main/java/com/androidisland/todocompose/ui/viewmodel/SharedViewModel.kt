@@ -86,13 +86,13 @@ class SharedViewModel @Inject constructor(
         }
     }
 
-    fun onDeleteAllTasksClicked() {
-        actionEventChannel.trySend(ActionEvent(Action.DELETE_ALL, null))
-    }
-
     fun deleteAllTasks() {
         viewModelScope.launch(dispatchers.io) {
             repository.deleteAllTasks()
         }
+    }
+
+    fun sendActionEvent(action: Action, toDoTask: ToDoTask?) {
+        actionEventChannel.trySend(ActionEvent(action, toDoTask))
     }
 }

@@ -52,7 +52,7 @@ fun ListScreen(
                     //TODO sort
                     Log.d("test123", "Sort: $it")
                 }, onDeleteAllClicked = {
-                    sharedViewModel.onDeleteAllTasksClicked()
+                    sharedViewModel.sendActionEvent(Action.DELETE_ALL, null)
                 }, onSearchClicked = {
                     sharedViewModel.queryTasks(it)
                 }, onCloseClicked = {
