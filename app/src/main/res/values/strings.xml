@@ -28,4 +28,6 @@
     <string name="no">No</string>
     <string name="delete_task_confirm_title">Delete Task</string>
     <string name="delete_task_confirm_msg">Are you sure you want to remove \'%1$s\'?</string>
+    <string name="delete_all_task_confirm_title">Delete All Tasks</string>
+    <string name="delete_all_task_confirm_msg">Are you sure you want delete all tasks permanently?</string>
 </resources>
