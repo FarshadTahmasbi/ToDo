@@ -30,23 +30,22 @@ import com.androidisland.todocompose.data.models.Priority
 import com.androidisland.todocompose.data.models.ToDoTask
 import com.androidisland.todocompose.ui.theme.dimens
 import com.androidisland.todocompose.ui.viewmodel.SharedViewModel
-import com.androidisland.todocompose.util.Resource
 
 
 @Composable
 fun ListContent(
-    sortState: Resource<Priority>,
+    sortState: Priority?,
+    isInSearchMode: Boolean,
     sharedViewModel: SharedViewModel,
     navigateToTaskScreen: (taskId: Int) -> Unit,
     contentPadding: PaddingValues
 ) {
-    if (sortState is Resource.Success) {
-
-        val tasksResource by when (sortState.data) {
-            Priority.NONE -> sharedViewModel.queriedTasks.collectAsState()
-            Priority.LOW -> sharedViewModel.lowPriorityTasks.collectAsState()
-            Priority.HIGH -> sharedViewModel.highPriorityTasks.collectAsState()
-            else -> throw RuntimeException("Unexpected sort state: ${sortState.data}")
+    if (sortState != null) {
+        val tasksResource by when {
+            isInSearchMode || sortState == Priority.NONE -> sharedViewModel.queriedTasks.collectAsState()
+            sortState == Priority.LOW -> sharedViewModel.lowPriorityTasks.collectAsState()
+            sortState == Priority.HIGH -> sharedViewModel.highPriorityTasks.collectAsState()
+            else -> throw RuntimeException("Unexpected sort state: $sortState")
         }
 
         tasksResource.fold(onLoading = {

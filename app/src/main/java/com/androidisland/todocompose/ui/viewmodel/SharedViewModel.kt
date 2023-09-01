@@ -68,11 +68,11 @@ class SharedViewModel @Inject constructor(
     }.catch { emit(Resource.Error(it)) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), Resource.Idle)
 
-    val sortState = dataStoreRepository.sortState.map { Resource.Success(it) }
+    val sortState = dataStoreRepository.sortState
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(),
-            Resource.Idle
+            null
         )
 
     init {
@@ -96,6 +96,7 @@ class SharedViewModel @Inject constructor(
     }
 
     fun queryTasks(query: String? = null) {
+        _searchQuery.value = null
         _searchQuery.value = query
     }
 

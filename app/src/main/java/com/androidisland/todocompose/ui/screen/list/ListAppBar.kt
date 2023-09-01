@@ -54,6 +54,7 @@ import com.androidisland.todocompose.util.SearchAppBarState
 @Composable
 fun ListAppBar(
     searchQuery: String?,
+    selectedPriority: Priority?,
     onSortClicked: (Priority) -> Unit,
     onDeleteAllClicked: () -> Unit,
     onSearchClicked: (String) -> Unit,
@@ -79,6 +80,7 @@ fun ListAppBar(
     when (searchAppBarState) {
         SearchAppBarState.CLOSED -> {
             DefaultListAppBar(
+                selectedPriority = selectedPriority,
                 onSearchClicked = {
                     searchAppBarState = SearchAppBarState.OPENED
                 }, onSortClicked = onSortClicked, onDeleteAllClicked = onDeleteAllClicked
@@ -106,6 +108,7 @@ fun ListAppBar(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DefaultListAppBar(
+    selectedPriority: Priority?,
     onSearchClicked: () -> Unit,
     onSortClicked: (Priority) -> Unit,
     onDeleteAllClicked: () -> Unit
@@ -120,6 +123,7 @@ fun DefaultListAppBar(
         titleContentColor = MaterialTheme.colorScheme.onPrimary
     ), actions = {
         ListAppBarActions(
+            selectedPriority = selectedPriority,
             onSearchClicked = onSearchClicked,
             onSortClicked = onSortClicked,
             onDeleteAllClicked = onDeleteAllClicked
@@ -129,6 +133,7 @@ fun DefaultListAppBar(
 
 @Composable
 fun ListAppBarActions(
+    selectedPriority: Priority?,
     onSearchClicked: () -> Unit,
     onSortClicked: (Priority) -> Unit,
     onDeleteAllClicked: () -> Unit
@@ -145,7 +150,7 @@ fun ListAppBarActions(
     }
 
     SearchAction(onSearchClicked = onSearchClicked)
-    SortAction(onSortClicked = onSortClicked)
+    SortAction(selectedPriority = selectedPriority, onSortClicked = onSortClicked)
     DeleteAllAction(onDeleteAllClicked = { isDialogVisible = true })
 }
 
@@ -164,6 +169,7 @@ fun SearchAction(
 
 @Composable
 fun SortAction(
+    selectedPriority: Priority?,
     onSortClicked: (Priority) -> Unit
 ) {
     var expanded by remember {
@@ -179,18 +185,39 @@ fun SortAction(
         DropdownMenu(modifier = Modifier.background(color = MaterialTheme.colorScheme.surface),
             expanded = expanded,
             onDismissRequest = { expanded = false }) {
-            DropdownMenuItem(onClick = {
-                expanded = false
-                onSortClicked(Priority.LOW)
-            }, text = { PriorityItem(priority = Priority.LOW) })
-            DropdownMenuItem(onClick = {
-                expanded = false
-                onSortClicked(Priority.HIGH)
-            }, text = { PriorityItem(priority = Priority.HIGH) })
-            DropdownMenuItem(onClick = {
-                expanded = false
-                onSortClicked(Priority.NONE)
-            }, text = { PriorityItem(priority = Priority.NONE) })
+            DropdownMenuItem(
+                onClick = {
+                    expanded = false
+                    onSortClicked(Priority.LOW)
+                },
+                text = {
+                    PriorityItem(
+                        priority = Priority.LOW,
+                        isSelected = selectedPriority == Priority.LOW
+                    )
+                })
+            DropdownMenuItem(
+                onClick = {
+                    expanded = false
+                    onSortClicked(Priority.HIGH)
+                },
+                text = {
+                    PriorityItem(
+                        priority = Priority.HIGH,
+                        isSelected = selectedPriority == Priority.HIGH
+                    )
+                })
+            DropdownMenuItem(
+                onClick = {
+                    expanded = false
+                    onSortClicked(Priority.NONE)
+                },
+                text = {
+                    PriorityItem(
+                        priority = Priority.NONE,
+                        isSelected = selectedPriority == Priority.NONE
+                    )
+                })
 
         }
     }
@@ -300,7 +327,11 @@ fun SearchAppBar(
 @Preview
 @Composable
 private fun DefaultListAppBarPreview() {
-    DefaultListAppBar(onSearchClicked = {}, onSortClicked = {}, onDeleteAllClicked = {})
+    DefaultListAppBar(
+        selectedPriority = Priority.HIGH,
+        onSearchClicked = {},
+        onSortClicked = {},
+        onDeleteAllClicked = {})
 }
 
 @Preview

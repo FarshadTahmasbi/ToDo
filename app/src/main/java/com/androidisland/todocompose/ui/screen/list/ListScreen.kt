@@ -48,6 +48,7 @@ fun ListScreen(
         topBar = {
             ListAppBar(
                 searchQuery = searchQuery,
+                selectedPriority = sortState,
                 onSortClicked = { priority ->
                     sharedViewModel.persistSortState(priority)
                 }, onDeleteAllClicked = {
@@ -62,6 +63,7 @@ fun ListScreen(
         content = {
             ListContent(
                 sortState = sortState,
+                isInSearchMode = searchQuery != null,
                 sharedViewModel = sharedViewModel,
                 navigateToTaskScreen = navigateToTaskScreen,
                 contentPadding = it
