@@ -96,7 +96,6 @@ class SharedViewModel @Inject constructor(
     }
 
     fun queryTasks(query: String? = null) {
-        _searchQuery.value = null
         _searchQuery.value = query
     }
 
