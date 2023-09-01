@@ -185,12 +185,13 @@ fun SortAction(
             }, text = { PriorityItem(priority = Priority.LOW) })
             DropdownMenuItem(onClick = {
                 expanded = false
-                onSortClicked(Priority.MEDIUM)
-            }, text = { PriorityItem(priority = Priority.MEDIUM) })
-            DropdownMenuItem(onClick = {
-                expanded = false
                 onSortClicked(Priority.HIGH)
             }, text = { PriorityItem(priority = Priority.HIGH) })
+            DropdownMenuItem(onClick = {
+                expanded = false
+                onSortClicked(Priority.NONE)
+            }, text = { PriorityItem(priority = Priority.NONE) })
+
         }
     }
 }

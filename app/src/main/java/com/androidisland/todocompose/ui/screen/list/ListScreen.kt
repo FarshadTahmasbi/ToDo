@@ -1,7 +1,6 @@
 package com.androidisland.todocompose.ui.screen.list
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -36,9 +35,10 @@ fun ListScreen(
     sharedViewModel: SharedViewModel,
     navigateToTaskScreen: (Int) -> Unit
 ) {
-    val taskQueryResult by sharedViewModel.queriedTasks.collectAsState()
     val snackbarAppState = rememberSnackbarState()
+
     val searchQuery by sharedViewModel.searchQuery.collectAsState()
+    val sortState by sharedViewModel.sortState.collectAsState()
 
     val context = LocalContext.current
     val actionEvent by sharedViewModel.actionEvent.collectAsState(initial = null)
@@ -48,9 +48,8 @@ fun ListScreen(
         topBar = {
             ListAppBar(
                 searchQuery = searchQuery,
-                onSortClicked = {
-                    //TODO sort
-                    Log.d("test123", "Sort: $it")
+                onSortClicked = { priority ->
+                    sharedViewModel.persistSortState(priority)
                 }, onDeleteAllClicked = {
                     sharedViewModel.sendActionEvent(Action.DELETE_ALL, null)
                 }, onSearchClicked = {
@@ -62,7 +61,8 @@ fun ListScreen(
         snackbarHost = { CustomSnackbarHost(hostState = snackbarAppState.hostState) },
         content = {
             ListContent(
-                tasksResource = taskQueryResult,
+                sortState = sortState,
+                sharedViewModel = sharedViewModel,
                 navigateToTaskScreen = navigateToTaskScreen,
                 contentPadding = it
             )

@@ -18,6 +18,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
@@ -27,38 +29,45 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.androidisland.todocompose.data.models.Priority
 import com.androidisland.todocompose.data.models.ToDoTask
 import com.androidisland.todocompose.ui.theme.dimens
+import com.androidisland.todocompose.ui.viewmodel.SharedViewModel
 import com.androidisland.todocompose.util.Resource
 
 
 @Composable
 fun ListContent(
-    tasksResource: Resource<List<ToDoTask>>,
+    sortState: Resource<Priority>,
+    sharedViewModel: SharedViewModel,
     navigateToTaskScreen: (taskId: Int) -> Unit,
     contentPadding: PaddingValues
 ) {
-    when (tasksResource) {
-        is Resource.Idle -> {
+    if (sortState is Resource.Success) {
 
+        val tasksResource by when (sortState.data) {
+            Priority.NONE -> sharedViewModel.queriedTasks.collectAsState()
+            Priority.LOW -> sharedViewModel.lowPriorityTasks.collectAsState()
+            Priority.HIGH -> sharedViewModel.highPriorityTasks.collectAsState()
+            else -> throw RuntimeException("Unexpected sort state: ${sortState.data}")
         }
 
-        is Resource.Loading -> {
-        }
-
-        is Resource.Success -> {
-            if (tasksResource.data.isEmpty()) {
+        tasksResource.fold(onLoading = {
+            //TODO compose it!
+        }, onSuccess = { data ->
+            if (data.isEmpty()) {
                 EmptyContent()
             } else {
                 DisplayTasks(
-                    tasks = tasksResource.data,
+                    tasks = data,
                     navigateToTaskScreen = navigateToTaskScreen,
                     contentPadding = contentPadding
                 )
             }
-        }
+        }, onError = {
+            //TODO compose it!
+        })
 
-        is Resource.Error -> {
-
-        }
+    } else {
+        //Only idle happens
+        //TODO compose it!
     }
 }
 

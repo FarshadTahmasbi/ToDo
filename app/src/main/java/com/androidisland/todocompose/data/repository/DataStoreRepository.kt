@@ -23,7 +23,7 @@ class DataStoreRepository @Inject constructor(private val dataStore: DataStore<P
         dataStore.data.catch {
             emit(emptyPreferences())
         }.map { prefs ->
-            Priority.valueOf(prefs[sortKey] ?: Priority.LOW.name)
+            Priority.valueOf(prefs[sortKey] ?: Priority.NONE.name)
         }
 
     suspend fun persistSortState(priority: Priority) {

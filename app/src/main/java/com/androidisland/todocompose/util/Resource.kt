@@ -8,4 +8,18 @@ sealed class Resource<out T> {
     data class Error(val error: Throwable) : Resource<Nothing>()
 
     fun getOrNull(): T? = if (this is Success) data else null
+
+    inline fun fold(
+        onIdle: () -> Unit = {},
+        onLoading: () -> Unit = {},
+        onSuccess: (T) -> Unit,
+        onError: (Throwable) -> Unit,
+    ) {
+        when (this) {
+            is Idle -> onIdle()
+            is Loading -> onLoading()
+            is Success -> onSuccess(data)
+            is Error -> onError(error)
+        }
+    }
 }
