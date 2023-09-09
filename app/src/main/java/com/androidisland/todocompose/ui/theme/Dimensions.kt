@@ -4,6 +4,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.unit.dp
 
 object Dimensions {
+    val xxLargePadding = 24.dp
+    val xLargePadding = 16.dp
     val largePadding = 12.dp
     val mediumPadding = 8.dp
     val smallPadding = 6.dp
