@@ -40,7 +40,8 @@ import com.androidisland.todocompose.ui.theme.dimens
 
 @Composable
 fun PriorityDropDown(
-    priority: Priority, onPrioritySelected: (Priority) -> Unit
+    priority: Priority,
+    onPrioritySelected: (Priority) -> Unit
 ) {
     var expanded by remember {
         mutableStateOf(false)
