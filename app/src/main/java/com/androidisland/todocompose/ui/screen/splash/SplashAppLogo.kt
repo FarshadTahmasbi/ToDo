@@ -22,20 +22,18 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.androidisland.todocompose.ext.usp
 
 
 @Composable
-fun SplashAppLogo(
-    logoSize: Dp
-) {
+fun SplashLogo(logoSize: Dp) {
     val backgroundColor = MaterialTheme.colorScheme.onPrimary
     val textColor = MaterialTheme.colorScheme.primary
 
     val textMeasurer = rememberTextMeasurer()
     val textToDraw = "TO\nDO"
     val textStyle = TextStyle(
-        fontSize = (logoSize.value / 4).sp,
+        fontSize = (logoSize.value / 4).usp,
         fontWeight = FontWeight.W900,
         fontFamily = FontFamily.Cursive,
         color = textColor,
@@ -88,5 +86,5 @@ fun SplashAppLogo(
 @Preview
 @Composable
 fun SplashAppLogoPreview() {
-    SplashAppLogo(logoSize = 120.dp)
+    SplashLogo(logoSize = 120.dp)
 }
