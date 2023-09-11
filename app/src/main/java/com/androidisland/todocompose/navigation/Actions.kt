@@ -4,6 +4,7 @@ import androidx.navigation.NavHostController
 
 class Actions(navHostController: NavHostController) {
     val navigateToTaskList: () -> Unit = {
+        navHostController.popBackStack(Screen.Splash.route, true)
         navHostController.navigate(Screen.TaskList.route) {
             popUpTo(Screen.TaskList.route) {
                 inclusive = true
@@ -11,6 +12,8 @@ class Actions(navHostController: NavHostController) {
         }
     }
     val navigateToTask: (taskId: Int) -> Unit = { taskId ->
-        navHostController.navigate(Screen.Task.routeWith(taskId))
+        navHostController.navigate(Screen.Task.routeWith(taskId)) {
+            popUpTo(Screen.TaskList.route)
+        }
     }
 }

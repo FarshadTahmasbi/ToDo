@@ -1,5 +1,6 @@
 package com.androidisland.todocompose.navigation
 
+import android.content.Intent
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
@@ -15,21 +16,45 @@ import androidx.navigation.navArgument
 import com.androidisland.todocompose.data.models.Priority
 import com.androidisland.todocompose.data.models.ToDoTask
 import com.androidisland.todocompose.ui.screen.list.ListScreen
+import com.androidisland.todocompose.ui.screen.splash.SplashScreen
 import com.androidisland.todocompose.ui.screen.task.TaskScreen
 import com.androidisland.todocompose.ui.viewmodel.SharedViewModel
 
 
 @Composable
 fun SetUpNavGraph(
+    intent: Intent,
     navController: NavHostController,
     actions: Actions,
     sharedViewModel: SharedViewModel
 ) {
+    val hasSplash =
+        intent.data == null || intent.data.toString() in Screen.Splash.deepLinks.map { it.uriPattern }
+    val startDestination = if (hasSplash) Screen.Splash.route else Screen.TaskList.route
     NavHost(
-        navController = navController, startDestination = Screen.TaskList.route
+        navController = navController,
+        startDestination = startDestination
     ) {
+        if (hasSplash) {
+            splashComposable(actions.navigateToTaskList)
+        }
         listComposable(sharedViewModel, actions.navigateToTask)
         taskComposable(sharedViewModel, actions.navigateToTaskList)
+    }
+}
+
+fun NavGraphBuilder.splashComposable(
+    navigateToTaskList: () -> Unit
+) {
+    composable(
+        route = Screen.Splash.route,
+        enterTransition = { EnterTransition.None },
+        exitTransition = { ExitTransition.None },
+        popEnterTransition = { EnterTransition.None },
+        popExitTransition = { ExitTransition.None },
+        deepLinks = Screen.Splash.deepLinks
+    ) {
+        SplashScreen(navigateToTaskList = navigateToTaskList)
     }
 }
 

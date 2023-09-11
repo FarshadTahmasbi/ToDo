@@ -27,7 +27,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             navController = rememberNavController()
-            ToDoApp(navController = navController)
+            ToDoApp(
+                intent = intent,
+                navController = navController
+            )
         }
     }
 
@@ -40,6 +43,7 @@ class MainActivity : ComponentActivity() {
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ToDoApp(
+    intent: Intent,
     navController: NavHostController,
     sharedViewModel: SharedViewModel = hiltViewModel()
 ) {
@@ -52,6 +56,7 @@ fun ToDoApp(
             modifier = Modifier.fillMaxSize()
         ) {
             SetUpNavGraph(
+                intent,
                 navController,
                 actions,
                 sharedViewModel

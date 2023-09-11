@@ -24,6 +24,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
 
             </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="todo" />
+            </intent-filter>
+
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -34,6 +44,7 @@
                     android:host="tasks"
                     android:scheme="todo" />
             </intent-filter>
+
         </activity>
     </application>
 
