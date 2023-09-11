@@ -7,6 +7,9 @@ sealed class Screen(val route: String) {
 
     open val deepLinks = listOf<NavDeepLink>()
 
+    fun containsDeepLink(deepLink: String) =
+        deepLinks.mapNotNull { it.uriPattern }.contains(deepLink)
+
     object Splash : Screen("splash") {
         override val deepLinks: List<NavDeepLink>
             get() = listOf(navDeepLink { uriPattern = "todo://" })

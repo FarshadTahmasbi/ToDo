@@ -29,7 +29,7 @@ fun SetUpNavGraph(
     sharedViewModel: SharedViewModel
 ) {
     val hasSplash =
-        intent.data == null || intent.data.toString() in Screen.Splash.deepLinks.map { it.uriPattern }
+        intent.data == null || Screen.Splash.containsDeepLink(intent.data.toString())
     val startDestination = if (hasSplash) Screen.Splash.route else Screen.TaskList.route
     NavHost(
         navController = navController,
