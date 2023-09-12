@@ -2,11 +2,13 @@ package com.androidisland.todocompose.ui.screen.splash
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Paint
@@ -26,7 +28,11 @@ import com.androidisland.todocompose.ext.usp
 
 
 @Composable
-fun SplashLogo(logoSize: Dp) {
+fun SplashLogo(
+    logoSize: Dp,
+    offsetY: Dp,
+    alpha: Float
+) {
     val backgroundColor = MaterialTheme.colorScheme.onPrimary
     val textColor = MaterialTheme.colorScheme.primary
 
@@ -49,6 +55,8 @@ fun SplashLogo(logoSize: Dp) {
         modifier = Modifier
             .width(logoSize)
             .aspectRatio(1f)
+            .offset(0.dp, offsetY)
+            .alpha(alpha)
     ) {
         val triangleHeight = size.height * 1f / 3f
         val squareSize = size.height * 2f / 3f
@@ -85,6 +93,6 @@ fun SplashLogo(logoSize: Dp) {
 
 @Preview
 @Composable
-fun SplashAppLogoPreview() {
-    SplashLogo(logoSize = 120.dp)
+fun SplashLogoPreview() {
+    SplashLogo(logoSize = 120.dp, 0.dp, 1f)
 }
