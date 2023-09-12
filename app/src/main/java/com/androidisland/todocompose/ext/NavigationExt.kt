@@ -15,6 +15,7 @@ fun NavGraphBuilder.screenComposable(
     val transitions = screen.transitions
     composable(
         route = screen.route,
+        arguments = screen.arguments,
         enterTransition = transitions.enterTransition,
         exitTransition = transitions.exitTransition,
         popEnterTransition = transitions.popEnterTransition,
