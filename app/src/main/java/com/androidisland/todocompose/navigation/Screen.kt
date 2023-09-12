@@ -6,6 +6,7 @@ import androidx.navigation.navDeepLink
 sealed class Screen(val route: String) {
 
     open val deepLinks = listOf<NavDeepLink>()
+    open val transitions: NavTransition = NavTransition.None
 
     fun containsDeepLink(deepLink: String) =
         deepLinks.mapNotNull { it.uriPattern }.contains(deepLink)
