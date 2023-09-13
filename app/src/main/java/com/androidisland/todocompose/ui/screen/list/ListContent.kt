@@ -46,11 +46,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
 import com.androidisland.todocompose.R
 import com.androidisland.todocompose.data.models.Priority
 import com.androidisland.todocompose.data.models.ToDoTask
 import com.androidisland.todocompose.ext.clickableThrottleFirst
+import com.androidisland.todocompose.ext.getSystemService
 import com.androidisland.todocompose.ext.vibrateOneShot
 import com.androidisland.todocompose.ui.common.DismissDirection2
 import com.androidisland.todocompose.ui.common.DismissThreshold
@@ -119,7 +119,7 @@ fun ListSuccessContent(
 
             val context = LocalContext.current
             val vibrator = remember {
-                ContextCompat.getSystemService(context, Vibrator::class.java)
+                context.getSystemService<Vibrator>()
             }
 
             val vibrationDuration = 50L
