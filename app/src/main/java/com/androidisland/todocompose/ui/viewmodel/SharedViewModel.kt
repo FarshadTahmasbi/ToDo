@@ -47,7 +47,7 @@ class SharedViewModel @Inject constructor(
     private val _searchQuery: MutableStateFlow<String?> = MutableStateFlow(null)
     val searchQuery: StateFlow<String?> = _searchQuery
 
-    private val delay = 2000L
+    private val delay = 0L
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val lowPriorityTasks = toDoRepository.sortByLowPriority.flatMapConcat {
