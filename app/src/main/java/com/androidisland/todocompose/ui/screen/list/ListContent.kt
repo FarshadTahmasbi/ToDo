@@ -1,5 +1,6 @@
 package com.androidisland.todocompose.ui.screen.list
 
+import android.os.Vibrator
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -39,15 +40,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import com.androidisland.todocompose.R
 import com.androidisland.todocompose.data.models.Priority
 import com.androidisland.todocompose.data.models.ToDoTask
 import com.androidisland.todocompose.ext.clickableThrottleFirst
+import com.androidisland.todocompose.ext.vibrateOneShot
 import com.androidisland.todocompose.ui.common.DismissDirection2
 import com.androidisland.todocompose.ui.common.DismissThreshold
 import com.androidisland.todocompose.ui.common.DismissValue2
@@ -113,6 +117,12 @@ fun ListSuccessContent(
             task.id
         }) { task ->
 
+            val context = LocalContext.current
+            val vibrator = remember {
+                ContextCompat.getSystemService(context, Vibrator::class.java)
+            }
+
+            val vibrationDuration = 50L
             val visibilityAnimDuration = 300
 
             var dismissValue: DismissValue2? by remember {
@@ -134,6 +144,12 @@ fun ListSuccessContent(
 
             var isThresholdTouched: Boolean by remember {
                 mutableStateOf(false)
+            }
+
+            if (isThresholdTouched) {
+                LaunchedEffect(key1 = Unit) {
+                    vibrator?.vibrateOneShot(vibrationDuration)
+                }
             }
 
             val degrees by animateFloatAsState(
