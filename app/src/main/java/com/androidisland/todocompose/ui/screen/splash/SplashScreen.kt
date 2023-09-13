@@ -36,7 +36,7 @@ fun SplashScreen(navigateToTaskList: () -> Unit) {
     )
 
     val alphaState by animateFloatAsState(
-        targetValue = if (startAnimation) 1F else 0f,
+        targetValue = if (startAnimation) 1f else 0f,
         animationSpec = tween(durationMillis = 1000),
         label = "Splash logo alpha animation"
     )

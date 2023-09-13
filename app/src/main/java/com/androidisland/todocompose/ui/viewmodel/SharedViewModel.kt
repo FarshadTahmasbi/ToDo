@@ -14,6 +14,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -46,12 +47,14 @@ class SharedViewModel @Inject constructor(
     private val _searchQuery: MutableStateFlow<String?> = MutableStateFlow(null)
     val searchQuery: StateFlow<String?> = _searchQuery
 
+    private val delay = 2000L
+
     @OptIn(ExperimentalCoroutinesApi::class)
     val lowPriorityTasks = toDoRepository.sortByLowPriority.flatMapConcat {
         flow {
             emit(Resource.Loading)
-            //TODO remove
-//            delay(2000L)
+            //Simulate a heavy io job
+            delay(delay)
             emit(Resource.Success(it))
         }
     }.catch { emit(Resource.Error(it)) }
@@ -61,8 +64,8 @@ class SharedViewModel @Inject constructor(
     val highPriorityTasks = toDoRepository.sortByHighPriority.flatMapConcat {
         flow {
             emit(Resource.Loading)
-            //TODO remove
-//            delay(2000)
+            //Simulate a heavy io job
+            delay(delay)
             emit(Resource.Success(it))
         }
     }.catch { emit(Resource.Error(it)) }

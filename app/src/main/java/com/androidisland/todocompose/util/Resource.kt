@@ -9,6 +9,13 @@ sealed class Resource<out T> {
 
     fun getOrNull(): T? = if (this is Success) data else null
 
+    fun isIdle() = this is Idle
+    fun isLoading() = this is Loading
+    fun isSuccess() = this is Success
+
+    fun isError() = this is Error
+
+
     inline fun fold(
         onIdle: () -> Unit = {},
         onLoading: () -> Unit = {},

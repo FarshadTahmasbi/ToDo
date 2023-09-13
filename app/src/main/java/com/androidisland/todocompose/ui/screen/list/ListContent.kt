@@ -33,7 +33,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,6 +43,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.androidisland.todocompose.R
 import com.androidisland.todocompose.data.models.Priority
 import com.androidisland.todocompose.data.models.ToDoTask
@@ -58,7 +58,6 @@ import com.androidisland.todocompose.ui.theme.dimens
 import com.androidisland.todocompose.ui.viewmodel.SharedViewModel
 import com.androidisland.todocompose.util.Action
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 
 @Composable
@@ -79,7 +78,7 @@ fun ListContent(
         }
 
         tasksResource.fold(onLoading = {
-            //TODO compose it!
+            LoadingContent()
         }, onSuccess = { data ->
             if (data.isEmpty()) {
                 EmptyContent()
@@ -92,12 +91,13 @@ fun ListContent(
                 )
             }
         }, onError = {
-            //TODO compose it!
+            ErrorContent(
+                message = it.message ?: stringResource(id = R.string.message_general_error)
+            )
         })
 
     } else {
         //Only idle happens
-        //TODO compose it!
     }
 }
 
@@ -108,7 +108,6 @@ fun ListSuccessContent(
     navigateToTaskScreen: (taskId: Int) -> Unit,
     contentPadding: PaddingValues
 ) {
-    //TODO animation
     LazyColumn(contentPadding = contentPadding) {
         items(items = tasks, key = { task ->
             task.id
@@ -126,13 +125,10 @@ fun ListSuccessContent(
 
             //Check if item is dismissed, wait to finish animation, then invoke swipe dismiss
             if (isDismissed) {
-                val scope = rememberCoroutineScope()
                 LaunchedEffect(key1 = Unit) {
-                    scope.launch {
-                        //Wait for animation
-                        delay(visibilityAnimDuration.toLong())
-                        onSwipeDismiss(Action.DELETE, task)
-                    }
+                    //Wait for animation
+                    delay(visibilityAnimDuration.toLong())
+                    onSwipeDismiss(Action.DELETE, task)
                 }
             }
 
@@ -167,7 +163,9 @@ fun ListSuccessContent(
                     },
                     background = {
                         SwipeBackground(
-                            dismissValue = dismissValue, degrees = degrees
+                            modifier = Modifier.fillMaxSize(),
+                            dismissValue = dismissValue,
+                            degrees = degrees
                         )
                     },
                     dismissContent = {
@@ -199,6 +197,7 @@ fun ListSuccessContent(
 
 @Composable
 fun SwipeBackground(
+    modifier: Modifier = Modifier,
     dismissValue: DismissValue2?, degrees: Float
 ) {
     val backgroundColor =
@@ -208,10 +207,11 @@ fun SwipeBackground(
     val icon =
         if (dismissValue == DismissValue2.DismissedToLeft) Icons.Filled.Delete else Icons.Filled.Edit
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(backgroundColor)
-            .padding(horizontal = MaterialTheme.dimens.xxLargePadding),
+        modifier = modifier.then(
+            Modifier
+                .background(backgroundColor)
+                .padding(horizontal = MaterialTheme.dimens.xxLargePadding)
+        ),
         contentAlignment = contentAlignment
     ) {
         Icon(
@@ -278,4 +278,28 @@ fun ToDoTaskItemPreview() {
         description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
         priority = Priority.LOW
     ), navigateToTaskScreen = {})
+}
+
+@Preview
+@Composable
+fun SwipeToLeftBackground() {
+    SwipeBackground(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(100.dp),
+        dismissValue = DismissValue2.DismissedToLeft,
+        degrees = 0f
+    )
+}
+
+@Preview
+@Composable
+fun SwipeToRightBackground() {
+    SwipeBackground(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(100.dp),
+        dismissValue = DismissValue2.DismissedToRight,
+        degrees = 0f
+    )
 }

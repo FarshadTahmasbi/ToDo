@@ -20,7 +20,7 @@ object Dimensions {
     val iconSizeSmall = 16.dp
     val iconSizeMedium = 32.dp
     val iconSizeLarge = 64.dp
-    val iconSizeXLarge = 128.dp
+    val iconSizeXLarge = 96.dp
 
     val borderWidthSmall = 1.dp
     val borderWidthMedium = 2.dp

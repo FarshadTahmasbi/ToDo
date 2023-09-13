@@ -31,4 +31,7 @@
     <string name="delete_task_confirm_msg">Are you sure you want to remove \'%1$s\'?</string>
     <string name="delete_all_task_confirm_title">Delete All Tasks</string>
     <string name="delete_all_task_confirm_msg">Are you sure you want delete all tasks permanently?</string>
+    <string name="message_general_error">Something went wrong!</string>
+    <string name="loading">Loading</string>
+    <string name="loading_msg">Loading…</string>
 </resources>
