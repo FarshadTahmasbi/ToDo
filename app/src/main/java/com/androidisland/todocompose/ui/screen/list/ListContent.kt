@@ -1,6 +1,10 @@
 package com.androidisland.todocompose.ui.screen.list
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -24,10 +28,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,6 +57,8 @@ import com.androidisland.todocompose.ui.theme.LowPriorityColor
 import com.androidisland.todocompose.ui.theme.dimens
 import com.androidisland.todocompose.ui.viewmodel.SharedViewModel
 import com.androidisland.todocompose.util.Action
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -100,58 +108,91 @@ fun ListSuccessContent(
     navigateToTaskScreen: (taskId: Int) -> Unit,
     contentPadding: PaddingValues
 ) {
-    //TODO animation, swipe to edit!
+    //TODO animation
     LazyColumn(contentPadding = contentPadding) {
         items(items = tasks, key = { task ->
             task.id
         }) { task ->
 
+            val visibilityAnimDuration = 300
+
             var dismissValue: DismissValue2? by remember {
                 mutableStateOf(null)
             }
 
-            var isSwiped: Boolean by remember {
+            var isDismissed: Boolean by remember {
+                mutableStateOf(false)
+            }
+
+            //Check if item is dismissed, wait to finish animation, then invoke swipe dismiss
+            if (isDismissed) {
+                val scope = rememberCoroutineScope()
+                LaunchedEffect(key1 = Unit) {
+                    scope.launch {
+                        //Wait for animation
+                        delay(visibilityAnimDuration.toLong())
+                        onSwipeDismiss(Action.DELETE, task)
+                    }
+                }
+            }
+
+            var isThresholdTouched: Boolean by remember {
                 mutableStateOf(false)
             }
 
             val degrees by animateFloatAsState(
-                targetValue = if (isSwiped.not()) 0f else -45f, label = "Swipe Animation"
+                targetValue = if (isThresholdTouched.not()) 0f else -45f, label = "Swipe Animation"
             )
 
-            SwipeToDismiss2(
-                setOf(DismissDirection2.RightToLeft, DismissDirection2.LeftToRight),
-                dismissThreshold = { size, density ->
-                    with(density) {
-                        DismissThreshold.Positional(size.height.toDp())
-                    }
-                },
-                background = {
-                    SwipeBackground(
-                        dismissValue = dismissValue, degrees = degrees
-                    )
-                },
-                dismissContent = {
-                    ToDoTaskItem(
-                        toDoTask = task, navigateToTaskScreen = navigateToTaskScreen
-                    )
-                },
-                onDismissStateChange = {
-                    dismissValue = it.value
-                    isSwiped = it.isThresholdTouched
-                    if (it.isDismissed) {
-                        when (it.value) {
-                            DismissValue2.DismissedToLeft -> {
-                                onSwipeDismiss(Action.DELETE, task)
-                            }
+            var isItemVisible by remember {
+                mutableStateOf(false)
+            }
 
-                            DismissValue2.DismissedToRight -> {
-                                navigateToTaskScreen(task.id)
-                            }
+            //Animate all added items
+            LaunchedEffect(key1 = true) {
+                isItemVisible = true
+            }
 
-                            else -> Unit
+            AnimatedVisibility(
+                visible = isItemVisible && isDismissed.not(),
+                enter = expandVertically(animationSpec = tween(durationMillis = visibilityAnimDuration)),
+                exit = shrinkVertically(animationSpec = tween(durationMillis = visibilityAnimDuration))
+            ) {
+                SwipeToDismiss2(
+                    setOf(DismissDirection2.RightToLeft, DismissDirection2.LeftToRight),
+                    dismissThreshold = { size, density ->
+                        with(density) {
+                            DismissThreshold.Positional(size.height.toDp())
                         }
-                    }
-                })
+                    },
+                    background = {
+                        SwipeBackground(
+                            dismissValue = dismissValue, degrees = degrees
+                        )
+                    },
+                    dismissContent = {
+                        ToDoTaskItem(
+                            toDoTask = task, navigateToTaskScreen = navigateToTaskScreen
+                        )
+                    },
+                    onDismissStateChange = {
+                        dismissValue = it.value
+                        isThresholdTouched = it.isThresholdTouched
+                        if (it.isDismissed) {
+                            when (it.value) {
+                                DismissValue2.DismissedToLeft -> {
+                                    isDismissed = true
+                                }
+
+                                DismissValue2.DismissedToRight -> {
+                                    navigateToTaskScreen(task.id)
+                                }
+
+                                else -> Unit
+                            }
+                        }
+                    })
+            }
         }
     }
 }

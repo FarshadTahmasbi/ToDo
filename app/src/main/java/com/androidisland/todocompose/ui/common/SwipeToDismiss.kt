@@ -80,7 +80,7 @@ fun SwipeToDismiss2(
         )
     },
     isEnabled: Boolean = true,
-    dismissDelay: Long = 200,
+    dismissDelay: Long = 0L,
     background: @Composable BoxScope.() -> Unit,
     dismissContent: @Composable BoxScope.() -> Unit,
     onDismissStateChange: (DismissState2) -> Unit
