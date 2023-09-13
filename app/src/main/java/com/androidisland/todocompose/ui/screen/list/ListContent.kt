@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -46,6 +47,7 @@ import com.androidisland.todocompose.ui.common.DismissThreshold
 import com.androidisland.todocompose.ui.common.DismissValue2
 import com.androidisland.todocompose.ui.common.SwipeToDismiss2
 import com.androidisland.todocompose.ui.theme.HighPriorityColor
+import com.androidisland.todocompose.ui.theme.LowPriorityColor
 import com.androidisland.todocompose.ui.theme.dimens
 import com.androidisland.todocompose.ui.viewmodel.SharedViewModel
 import com.androidisland.todocompose.util.Action
@@ -98,37 +100,56 @@ fun ListSuccessContent(
     navigateToTaskScreen: (taskId: Int) -> Unit,
     contentPadding: PaddingValues
 ) {
+    //TODO animation, swipe to edit!
     LazyColumn(contentPadding = contentPadding) {
         items(items = tasks, key = { task ->
             task.id
         }) { task ->
+
+            var dismissValue: DismissValue2? by remember {
+                mutableStateOf(null)
+            }
+
             var isSwiped: Boolean by remember {
                 mutableStateOf(false)
             }
 
             val degrees by animateFloatAsState(
-                targetValue = if (isSwiped.not()) 0f else -45f,
-                label = "Swipe Animation"
+                targetValue = if (isSwiped.not()) 0f else -45f, label = "Swipe Animation"
             )
 
             SwipeToDismiss2(
-                setOf(DismissDirection2.RightToLeft),
+                setOf(DismissDirection2.RightToLeft, DismissDirection2.LeftToRight),
                 dismissThreshold = { size, density ->
                     with(density) {
                         DismissThreshold.Positional(size.height.toDp())
                     }
                 },
-                background = { SwipeBackground(degrees = degrees) },
+                background = {
+                    SwipeBackground(
+                        dismissValue = dismissValue, degrees = degrees
+                    )
+                },
                 dismissContent = {
                     ToDoTaskItem(
-                        toDoTask = task,
-                        navigateToTaskScreen = navigateToTaskScreen
+                        toDoTask = task, navigateToTaskScreen = navigateToTaskScreen
                     )
                 },
                 onDismissStateChange = {
+                    dismissValue = it.value
                     isSwiped = it.isThresholdTouched
-                    if (it.isDismissed && it.value == DismissValue2.DismissedToLeft) {
-                        onSwipeDismiss(Action.DELETE, task)
+                    if (it.isDismissed) {
+                        when (it.value) {
+                            DismissValue2.DismissedToLeft -> {
+                                onSwipeDismiss(Action.DELETE, task)
+                            }
+
+                            DismissValue2.DismissedToRight -> {
+                                navigateToTaskScreen(task.id)
+                            }
+
+                            else -> Unit
+                        }
                     }
                 })
         }
@@ -136,17 +157,25 @@ fun ListSuccessContent(
 }
 
 @Composable
-fun SwipeBackground(degrees: Float) {
+fun SwipeBackground(
+    dismissValue: DismissValue2?, degrees: Float
+) {
+    val backgroundColor =
+        if (dismissValue == DismissValue2.DismissedToLeft) HighPriorityColor else LowPriorityColor
+    val contentAlignment =
+        if (dismissValue == DismissValue2.DismissedToLeft) Alignment.CenterEnd else Alignment.CenterStart
+    val icon =
+        if (dismissValue == DismissValue2.DismissedToLeft) Icons.Filled.Delete else Icons.Filled.Edit
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(HighPriorityColor)
+            .background(backgroundColor)
             .padding(horizontal = MaterialTheme.dimens.xxLargePadding),
-        contentAlignment = Alignment.CenterEnd
+        contentAlignment = contentAlignment
     ) {
         Icon(
             modifier = Modifier.rotate(degrees = degrees),
-            imageVector = Icons.Filled.Delete,
+            imageVector = icon,
             contentDescription = stringResource(id = R.string.delete_icon),
             tint = Color.White
         )
@@ -155,8 +184,7 @@ fun SwipeBackground(degrees: Float) {
 
 @Composable
 fun ToDoTaskItem(
-    toDoTask: ToDoTask,
-    navigateToTaskScreen: (taskId: Int) -> Unit
+    toDoTask: ToDoTask, navigateToTaskScreen: (taskId: Int) -> Unit
 ) {
     Surface(
         modifier = Modifier
