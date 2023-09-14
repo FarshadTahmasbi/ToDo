@@ -39,6 +39,7 @@ sealed class DismissThreshold {
     data class Positional(val value: Dp) : DismissThreshold()
 }
 
+@Immutable
 enum class DismissValue2 {
     Default, DismissedToLeft, DismissedToRight
 }
@@ -114,36 +115,29 @@ fun SwipeToDismiss2(
         )
         Box(modifier = Modifier
             .fillMaxSize()
-            .offset {
-                offsetX.value.let { offset ->
-                    val intOffset = if (offset < 0 && DismissDirection2.RightToLeft in directions) {
-                        IntOffset(offset.roundToInt(), 0)
-                    } else if (offset > 0 && DismissDirection2.LeftToRight in directions) {
-                        IntOffset(offset.roundToInt(), 0)
-                    } else {
-                        IntOffset.Zero
-                    }
-
-                    signedProgress = intOffset.x / size.width.toFloat()
-                    //Update value and direction state
-                    val dismissValue = signedProgress.signedProgressToDismissValue()
-
-                    //Invoke listener
-                    onDismissStateChange(
-                        DismissState2(
-                            isDismissed = false,
-                            value = dismissValue,
-                            progress = abs(signedProgress),
-                            isThresholdTouched = abs(signedProgress) >= thresholdPercentage
-                        )
-                    )
-
-                    intOffset
-                }
-            }
+            .offset { IntOffset(offsetX.value.roundToInt(), 0) }
             .draggable(state = rememberDraggableState { delta ->
-                coroutineScope.launch {
-                    offsetX.snapTo(offsetX.value + delta)
+                val offset = offsetX.value + delta
+                if ((offset < 0 && DismissDirection2.RightToLeft in directions) ||
+                    offset > 0 && DismissDirection2.LeftToRight in directions
+                ) {
+                    coroutineScope.launch {
+                        offsetX.snapTo(offset)
+
+                        signedProgress = offset / size.width.toFloat()
+                        //Update value and direction state
+                        val dismissValue = signedProgress.signedProgressToDismissValue()
+
+                        //Invoke listener
+                        onDismissStateChange(
+                            DismissState2(
+                                isDismissed = false,
+                                value = dismissValue,
+                                progress = abs(signedProgress),
+                                isThresholdTouched = abs(signedProgress) >= thresholdPercentage
+                            )
+                        )
+                    }
                 }
             },
                 orientation = Orientation.Horizontal,

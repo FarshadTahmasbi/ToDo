@@ -214,7 +214,8 @@ fun ListSuccessContent(
 @Composable
 fun SwipeBackground(
     modifier: Modifier = Modifier,
-    dismissValue: DismissValue2?, degrees: Float
+    dismissValue: DismissValue2?,
+    degrees: Float
 ) {
     val backgroundColor =
         if (dismissValue == DismissValue2.DismissedToLeft) HighPriorityColor else LowPriorityColor
