@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -42,6 +43,10 @@ fun TaskContent(
     ) {
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = MaterialTheme.colorScheme.onSurface,
+                focusedLabelColor = MaterialTheme.colorScheme.onSurface
+            ),
             value = title,
             onValueChange = onTitleChanged,
             label = { Text(text = stringResource(id = R.string.title)) },
@@ -60,6 +65,10 @@ fun TaskContent(
         )
         OutlinedTextField(
             modifier = Modifier.fillMaxSize(),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = MaterialTheme.colorScheme.onSurface,
+                focusedLabelColor = MaterialTheme.colorScheme.onSurface
+            ),
             value = description,
             onValueChange = onDescriptionChanged,
             label = { Text(text = stringResource(id = R.string.description)) },

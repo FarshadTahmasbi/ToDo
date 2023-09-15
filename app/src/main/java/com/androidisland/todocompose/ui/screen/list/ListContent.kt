@@ -120,8 +120,8 @@ fun ListSuccessContent(
                 context.getSystemService<Vibrator>()
             }
 
-            val vibrationDuration = 50L
-            val visibilityAnimDuration = 300
+            val vibrationDuration = remember { 50L }
+            val visibilityAnimDuration = remember { 200 }
 
             var dismissValue: DismissValue2? by remember {
                 mutableStateOf(null)
@@ -155,8 +155,7 @@ fun ListSuccessContent(
                     0f
                 } else {
                     if (dismissValue == DismissValue2.DismissedToLeft) -45f else 45f
-                },
-                label = "Swipe Animation"
+                }, label = "Swipe Animation"
             )
 
             var isItemVisible by remember {
@@ -204,9 +203,7 @@ fun ListSuccessContent(
 
 @Composable
 fun SwipeBackground(
-    modifier: Modifier = Modifier,
-    dismissValue: DismissValue2?,
-    degrees: Float
+    modifier: Modifier = Modifier, dismissValue: DismissValue2?, degrees: Float
 ) {
     val contentAlignment =
         if (dismissValue == DismissValue2.DismissedToLeft) Alignment.CenterEnd else Alignment.CenterStart
@@ -216,8 +213,7 @@ fun SwipeBackground(
             Modifier
                 .background(HighPriorityColor)
                 .padding(horizontal = MaterialTheme.dimens.xxLargePadding)
-        ),
-        contentAlignment = contentAlignment
+        ), contentAlignment = contentAlignment
     ) {
         Icon(
             modifier = Modifier.rotate(degrees = degrees),
