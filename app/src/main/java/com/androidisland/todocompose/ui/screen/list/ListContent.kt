@@ -23,7 +23,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -57,7 +56,6 @@ import com.androidisland.todocompose.ui.common.DismissThreshold
 import com.androidisland.todocompose.ui.common.DismissValue2
 import com.androidisland.todocompose.ui.common.SwipeToDismiss2
 import com.androidisland.todocompose.ui.theme.HighPriorityColor
-import com.androidisland.todocompose.ui.theme.LowPriorityColor
 import com.androidisland.todocompose.ui.theme.dimens
 import com.androidisland.todocompose.ui.viewmodel.SharedViewModel
 import com.androidisland.todocompose.util.Action
@@ -153,7 +151,12 @@ fun ListSuccessContent(
             }
 
             val degrees by animateFloatAsState(
-                targetValue = if (isThresholdTouched.not()) 0f else -45f, label = "Swipe Animation"
+                targetValue = if (isThresholdTouched.not()) {
+                    0f
+                } else {
+                    if (dismissValue == DismissValue2.DismissedToLeft) -45f else 45f
+                },
+                label = "Swipe Animation"
             )
 
             var isItemVisible by remember {
@@ -189,22 +192,10 @@ fun ListSuccessContent(
                             toDoTask = task, navigateToTaskScreen = navigateToTaskScreen
                         )
                     },
-                    onDismissStateChange = {
-                        dismissValue = it.value
-                        isThresholdTouched = it.isThresholdTouched
-                        if (it.isDismissed) {
-                            when (it.value) {
-                                DismissValue2.DismissedToLeft -> {
-                                    isDismissed = true
-                                }
-
-                                DismissValue2.DismissedToRight -> {
-                                    navigateToTaskScreen(task.id)
-                                }
-
-                                else -> Unit
-                            }
-                        }
+                    onDismissStateChange = { dismissState ->
+                        dismissValue = dismissState.value
+                        isDismissed = dismissState.isDismissed
+                        isThresholdTouched = dismissState.isThresholdTouched
                     })
             }
         }
@@ -217,23 +208,20 @@ fun SwipeBackground(
     dismissValue: DismissValue2?,
     degrees: Float
 ) {
-    val backgroundColor =
-        if (dismissValue == DismissValue2.DismissedToLeft) HighPriorityColor else LowPriorityColor
     val contentAlignment =
         if (dismissValue == DismissValue2.DismissedToLeft) Alignment.CenterEnd else Alignment.CenterStart
-    val icon =
-        if (dismissValue == DismissValue2.DismissedToLeft) Icons.Filled.Delete else Icons.Filled.Edit
+
     Box(
         modifier = modifier.then(
             Modifier
-                .background(backgroundColor)
+                .background(HighPriorityColor)
                 .padding(horizontal = MaterialTheme.dimens.xxLargePadding)
         ),
         contentAlignment = contentAlignment
     ) {
         Icon(
             modifier = Modifier.rotate(degrees = degrees),
-            imageVector = icon,
+            imageVector = Icons.Filled.Delete,
             contentDescription = stringResource(id = R.string.delete_icon),
             tint = Color.White
         )
@@ -299,24 +287,12 @@ fun ToDoTaskItemPreview() {
 
 @Preview
 @Composable
-fun SwipeToLeftBackground() {
+fun SwipeBackgroundPreview() {
     SwipeBackground(
         modifier = Modifier
             .fillMaxWidth()
             .height(100.dp),
         dismissValue = DismissValue2.DismissedToLeft,
-        degrees = 0f
-    )
-}
-
-@Preview
-@Composable
-fun SwipeToRightBackground() {
-    SwipeBackground(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(100.dp),
-        dismissValue = DismissValue2.DismissedToRight,
         degrees = 0f
     )
 }
