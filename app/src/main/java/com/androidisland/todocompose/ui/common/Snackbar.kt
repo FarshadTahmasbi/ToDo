@@ -3,6 +3,7 @@ package com.androidisland.todocompose.ui.common
 import android.content.Context
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarData
 import androidx.compose.material3.SnackbarDuration
@@ -102,7 +103,11 @@ fun CustomSnackbarHost(
     hostState: SnackbarHostState,
     alignment: Alignment = Alignment.BottomCenter,
     snackbar: @Composable (SnackbarData) -> Unit = {
-        Snackbar(it)
+        Snackbar(
+            snackbarData = it,
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
+        )
     }
 ) {
     Box(
