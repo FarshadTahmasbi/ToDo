@@ -237,7 +237,9 @@ fun DeleteAllAction(
             contentDescription = stringResource(id = R.string.delete_all_action),
             tint = MaterialTheme.colorScheme.onPrimary
         )
-        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+        DropdownMenu(expanded = expanded,
+            modifier = Modifier.background(color = MaterialTheme.colorScheme.surface),
+            onDismissRequest = { expanded = false }) {
             DropdownMenuItem(onClick = {
                 expanded = false
                 onDeleteAllClicked()
