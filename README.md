@@ -8,7 +8,7 @@ Also, I made some minor changes to have more challenges.
 
 <table>
   <tr>
-    <td> <img src="raw/Light.png"  alt="1" width = 360px height = 640px ></td>
-    <td><img src="raw/Dark.png" alt="2" width = 360px height = 640px></td>
+    <td> <img src="raw/Light.png"  alt="1"></td>
+    <td><img src="raw/Dark.png" alt="2"></td>
    </tr> 
 </table>
