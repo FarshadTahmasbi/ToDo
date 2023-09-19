@@ -12,6 +12,10 @@ sealed class Screen(val route: String) {
     open val arguments: List<NamedNavArgument> = emptyList()
     open val transitions: NavTransition = NavTransition.None
 
+    object Args {
+        const val taskId = "taskId"
+    }
+
     fun containsDeepLink(deepLink: String) =
         deepLinks.mapNotNull { it.uriPattern }.contains(deepLink)
 
@@ -27,10 +31,6 @@ sealed class Screen(val route: String) {
     }
 
     object Task : Screen("tasks/{${Args.taskId}}") {
-
-        object Args {
-            const val taskId = "taskId"
-        }
 
         override val deepLinks: List<NavDeepLink>
             get() = listOf(navDeepLink { uriPattern = "todo://tasks/{${Args.taskId}}" })
