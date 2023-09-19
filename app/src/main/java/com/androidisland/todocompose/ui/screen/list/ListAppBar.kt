@@ -118,7 +118,7 @@ fun DefaultListAppBar(
             text = stringResource(id = R.string.list_app_bar_title),
             color = MaterialTheme.colorScheme.onPrimary
         )
-    }, colors = TopAppBarDefaults.smallTopAppBarColors(
+    }, colors = TopAppBarDefaults.topAppBarColors(
         containerColor = MaterialTheme.colorScheme.primary,
         titleContentColor = MaterialTheme.colorScheme.onPrimary
     ), actions = {

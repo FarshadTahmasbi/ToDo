@@ -54,7 +54,7 @@ fun NewTaskAppBar(
         )
     }, navigationIcon = {
         BackAction(onBackClicked = onActionClicked)
-    }, colors = TopAppBarDefaults.smallTopAppBarColors(
+    }, colors = TopAppBarDefaults.topAppBarColors(
         containerColor = MaterialTheme.colorScheme.primary,
         titleContentColor = MaterialTheme.colorScheme.onPrimary
     ), actions = {
@@ -103,7 +103,7 @@ fun ExistingTaskAppBar(
         )
     }, navigationIcon = {
         CloseAction(onCloseClicked = onActionClicked)
-    }, colors = TopAppBarDefaults.smallTopAppBarColors(
+    }, colors = TopAppBarDefaults.topAppBarColors(
         containerColor = MaterialTheme.colorScheme.primary,
         titleContentColor = MaterialTheme.colorScheme.onPrimary
     ), actions = {

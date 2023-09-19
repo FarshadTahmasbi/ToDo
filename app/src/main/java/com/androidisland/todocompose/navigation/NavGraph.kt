@@ -2,14 +2,10 @@ package com.androidisland.todocompose.navigation
 
 import android.content.Intent
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import com.androidisland.todocompose.data.models.Priority
-import com.androidisland.todocompose.data.models.ToDoTask
 import com.androidisland.todocompose.ext.screenComposable
 import com.androidisland.todocompose.ui.screen.list.ListScreen
 import com.androidisland.todocompose.ui.screen.splash.SplashScreen
@@ -63,16 +59,8 @@ fun NavGraphBuilder.taskComposable(
     sharedViewModel: SharedViewModel,
     navigateToTaskList: () -> Unit
 ) {
-    screenComposable(Screen.Task) { navBackStackEntry ->
-        val taskId = navBackStackEntry.arguments!!.getInt(Screen.Task.Args.taskId)
-        //Here If I get a valid task id, I pass a fake tak as initial value until the real one is loaded
-        //In this way, compose picks the right toolbar at first composition!
-        val initialTask = if (taskId > 0) ToDoTask(0, "", "", Priority.LOW) else null
-        val task by produceState(initialValue = initialTask) {
-            value = sharedViewModel.getTask(taskId)
-        }
+    screenComposable(Screen.Task) {
         TaskScreen(
-            task,
             hiltViewModel(),
             sharedViewModel,
             navigateToTaskList
