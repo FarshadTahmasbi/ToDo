@@ -1,4 +1,4 @@
-package com.androidisland.todocompose.ui.screen.list
+package com.androidisland.todocompose.feature.tasklist.ui
 
 import android.content.Context
 import androidx.compose.foundation.shape.CircleShape
@@ -18,11 +18,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.androidisland.todocompose.R
-import com.androidisland.todocompose.ui.common.CustomSnackbarHost
-import com.androidisland.todocompose.ui.common.SnackbarState
-import com.androidisland.todocompose.ui.common.rememberSnackbarState
-import com.androidisland.todocompose.ui.theme.ToDoAppTheme
-import com.androidisland.todocompose.ui.viewmodel.SharedViewModel
+import com.androidisland.todocompose.common.SharedViewModel
+import com.androidisland.todocompose.common.theme.ToDoAppTheme
+import com.androidisland.todocompose.common.ui.CustomSnackbarHost
+import com.androidisland.todocompose.common.ui.SnackbarState
+import com.androidisland.todocompose.common.ui.rememberSnackbarState
 import com.androidisland.todocompose.util.Action
 import com.androidisland.todocompose.util.ActionEvent
 import com.androidisland.todocompose.util.Either

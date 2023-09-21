@@ -1,4 +1,4 @@
-package com.androidisland.todocompose.ui.theme
+package com.androidisland.todocompose.common.theme
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.unit.dp

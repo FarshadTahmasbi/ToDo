@@ -1,4 +1,4 @@
-package com.androidisland.todocompose.ui.screen.splash
+package com.androidisland.todocompose.feature.splash.ui
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.aspectRatio

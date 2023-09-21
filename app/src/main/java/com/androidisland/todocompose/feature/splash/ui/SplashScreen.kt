@@ -1,4 +1,4 @@
-package com.androidisland.todocompose.ui.screen.splash
+package com.androidisland.todocompose.feature.splash.ui
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState

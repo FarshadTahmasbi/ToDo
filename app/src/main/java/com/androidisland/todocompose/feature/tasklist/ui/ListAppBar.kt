@@ -1,4 +1,4 @@
-package com.androidisland.todocompose.ui.screen.list
+package com.androidisland.todocompose.feature.tasklist.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -43,11 +43,11 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import com.androidisland.todocompose.R
+import com.androidisland.todocompose.common.theme.alphaDisabled
+import com.androidisland.todocompose.common.theme.dimens
 import com.androidisland.todocompose.component.DisplayAlertDialog
 import com.androidisland.todocompose.component.PriorityItem
 import com.androidisland.todocompose.data.models.Priority
-import com.androidisland.todocompose.ui.theme.alphaDisabled
-import com.androidisland.todocompose.ui.theme.dimens
 import com.androidisland.todocompose.util.SearchAppBarState
 
 

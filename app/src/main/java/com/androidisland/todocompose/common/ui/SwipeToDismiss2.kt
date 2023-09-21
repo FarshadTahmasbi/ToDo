@@ -1,4 +1,4 @@
-package com.androidisland.todocompose.ui.common
+package com.androidisland.todocompose.common.ui
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween

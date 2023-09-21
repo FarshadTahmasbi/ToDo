@@ -1,4 +1,4 @@
-package com.androidisland.todocompose.ui.screen.task
+package com.androidisland.todocompose.feature.task.ui
 
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -9,12 +9,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.androidisland.todocompose.R
+import com.androidisland.todocompose.common.SharedViewModel
+import com.androidisland.todocompose.common.ui.CustomSnackbarHost
+import com.androidisland.todocompose.common.ui.rememberSnackbarState
 import com.androidisland.todocompose.data.models.Priority
 import com.androidisland.todocompose.data.models.ToDoTask
-import com.androidisland.todocompose.task.TaskViewModel
-import com.androidisland.todocompose.ui.common.CustomSnackbarHost
-import com.androidisland.todocompose.ui.common.rememberSnackbarState
-import com.androidisland.todocompose.ui.viewmodel.SharedViewModel
+import com.androidisland.todocompose.feature.task.TaskViewModel
 import com.androidisland.todocompose.util.Action
 import com.androidisland.todocompose.util.Either
 

@@ -1,4 +1,4 @@
-package com.androidisland.todocompose.ui.common
+package com.androidisland.todocompose.common.ui
 
 import android.content.Context
 import androidx.compose.foundation.layout.Box

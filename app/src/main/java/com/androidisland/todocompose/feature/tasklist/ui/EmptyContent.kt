@@ -1,4 +1,4 @@
-package com.androidisland.todocompose.ui.screen.list
+package com.androidisland.todocompose.feature.tasklist.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,10 +17,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.androidisland.todocompose.R
-import com.androidisland.todocompose.ui.theme.dimens
+import com.androidisland.todocompose.common.theme.dimens
 
 @Composable
-fun ErrorContent(message: String) {
+fun EmptyContent() {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -31,13 +31,13 @@ fun ErrorContent(message: String) {
     ) {
         Icon(
             modifier = Modifier.size(MaterialTheme.dimens.iconSizeXLarge),
-            painter = painterResource(id = R.drawable.ic_error),
+            painter = painterResource(id = R.drawable.ic_empty),
             contentDescription = stringResource(id = R.string.sad_face_icon),
             tint = MaterialTheme.colorScheme.inverseOnSurface
         )
         Text(
             modifier = Modifier.padding(all = MaterialTheme.dimens.mediumPadding),
-            text = message,
+            text = stringResource(R.string.empty_content_msg),
             color = MaterialTheme.colorScheme.inverseOnSurface,
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.headlineMedium
@@ -47,6 +47,6 @@ fun ErrorContent(message: String) {
 
 @Preview
 @Composable
-fun ErrorContentPreview() {
-    ErrorContent("Something bad happened!")
+fun EmptyContentPreview() {
+    EmptyContent()
 }

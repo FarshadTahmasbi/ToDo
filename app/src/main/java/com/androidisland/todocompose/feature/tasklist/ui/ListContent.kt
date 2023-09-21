@@ -1,4 +1,4 @@
-package com.androidisland.todocompose.ui.screen.list
+package com.androidisland.todocompose.feature.tasklist.ui
 
 import android.os.Vibrator
 import androidx.compose.animation.AnimatedVisibility
@@ -46,18 +46,18 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.androidisland.todocompose.R
+import com.androidisland.todocompose.common.SharedViewModel
+import com.androidisland.todocompose.common.theme.HighPriorityColor
+import com.androidisland.todocompose.common.theme.dimens
+import com.androidisland.todocompose.common.ui.DismissDirection2
+import com.androidisland.todocompose.common.ui.DismissThreshold
+import com.androidisland.todocompose.common.ui.DismissValue2
+import com.androidisland.todocompose.common.ui.SwipeToDismiss2
 import com.androidisland.todocompose.data.models.Priority
 import com.androidisland.todocompose.data.models.ToDoTask
 import com.androidisland.todocompose.ext.clickableThrottleFirst
 import com.androidisland.todocompose.ext.getSystemService
 import com.androidisland.todocompose.ext.vibrateOneShot
-import com.androidisland.todocompose.ui.common.DismissDirection2
-import com.androidisland.todocompose.ui.common.DismissThreshold
-import com.androidisland.todocompose.ui.common.DismissValue2
-import com.androidisland.todocompose.ui.common.SwipeToDismiss2
-import com.androidisland.todocompose.ui.theme.HighPriorityColor
-import com.androidisland.todocompose.ui.theme.dimens
-import com.androidisland.todocompose.ui.viewmodel.SharedViewModel
 import com.androidisland.todocompose.util.Action
 import kotlinx.coroutines.delay
 

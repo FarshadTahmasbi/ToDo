@@ -1,4 +1,4 @@
-package com.androidisland.todocompose.ui.theme
+package com.androidisland.todocompose.common.theme
 
 import android.app.Activity
 import android.os.Build

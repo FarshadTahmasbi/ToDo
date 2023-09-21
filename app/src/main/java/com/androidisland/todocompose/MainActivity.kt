@@ -13,10 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.androidisland.todocompose.common.SharedViewModel
+import com.androidisland.todocompose.common.theme.ToDoAppTheme
 import com.androidisland.todocompose.navigation.Actions
 import com.androidisland.todocompose.navigation.SetUpNavGraph
-import com.androidisland.todocompose.ui.theme.ToDoAppTheme
-import com.androidisland.todocompose.ui.viewmodel.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

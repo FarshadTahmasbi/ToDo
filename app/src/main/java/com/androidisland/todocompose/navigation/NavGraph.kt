@@ -6,11 +6,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import com.androidisland.todocompose.common.SharedViewModel
 import com.androidisland.todocompose.ext.screenComposable
-import com.androidisland.todocompose.ui.screen.list.ListScreen
-import com.androidisland.todocompose.ui.screen.splash.SplashScreen
-import com.androidisland.todocompose.ui.screen.task.TaskScreen
-import com.androidisland.todocompose.ui.viewmodel.SharedViewModel
+import com.androidisland.todocompose.feature.splash.ui.SplashScreen
+import com.androidisland.todocompose.feature.task.ui.TaskScreen
+import com.androidisland.todocompose.feature.tasklist.ui.ListScreen
 
 
 @Composable

@@ -1,4 +1,4 @@
-package com.androidisland.todocompose.ui.screen.task
+package com.androidisland.todocompose.feature.task.ui
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack

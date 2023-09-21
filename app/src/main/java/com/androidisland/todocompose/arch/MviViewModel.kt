@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 
@@ -33,7 +32,14 @@ abstract class MviViewModel<S : State, A : Action, E : Effect>(
     )
 
     private val _effect: Channel<E?> = Channel(Channel.BUFFERED)
-    val effect = _effect.receiveAsFlow().mapNotNull { it }
+
+    /**
+     * Use this flow to collect all side effects.
+     *
+     * Note: If this flow is combined with Jetpack Compose, you need to collect it as a state,
+     * Then pass it as key argument of the [LaunchEffect] composable function and consume it there.
+     */
+    val effect = _effect.receiveAsFlow()
 
     init {
         collectActions()
@@ -52,7 +58,7 @@ abstract class MviViewModel<S : State, A : Action, E : Effect>(
     protected abstract suspend fun reduce(currentState: S, action: A): S
 
     protected fun dispatchEffect(builder: () -> E) {
-        _effect.trySend(null)
         _effect.trySend(builder())
+        _effect.trySend(null)
     }
 }

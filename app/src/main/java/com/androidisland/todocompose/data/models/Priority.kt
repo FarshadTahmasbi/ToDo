@@ -3,10 +3,10 @@ package com.androidisland.todocompose.data.models
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.intl.Locale
-import com.androidisland.todocompose.ui.theme.HighPriorityColor
-import com.androidisland.todocompose.ui.theme.LowPriorityColor
-import com.androidisland.todocompose.ui.theme.MediumPriorityColor
-import com.androidisland.todocompose.ui.theme.NonePriorityColor
+import com.androidisland.todocompose.common.theme.HighPriorityColor
+import com.androidisland.todocompose.common.theme.LowPriorityColor
+import com.androidisland.todocompose.common.theme.MediumPriorityColor
+import com.androidisland.todocompose.common.theme.NonePriorityColor
 
 
 enum class Priority(val color: Color) {
