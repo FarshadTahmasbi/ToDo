@@ -3,9 +3,12 @@ package com.androidisland.todocompose.di
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import com.androidisland.todocompose.common.resource.StringResProvider
+import com.androidisland.todocompose.common.resource.StringResProviderImpl
 import com.androidisland.todocompose.ext.dataStore
 import com.androidisland.todocompose.thread.CoroutineDispatchers
 import com.androidisland.todocompose.util.ActionEvent
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,7 +22,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AppModule {
+interface AppModule {
 
     @Provides
     @Singleton
@@ -41,4 +44,8 @@ object AppModule {
     @Provides
     @Singleton
     fun provideActionEventReceiver(channel: Channel<ActionEvent?>) = channel.receiveAsFlow()
+
+    @Binds
+    @Singleton
+    abstract fun bindStringResProvider(provider: StringResProviderImpl): StringResProvider
 }
