@@ -31,13 +31,13 @@ fun SplashScreen(navigateToTaskList: () -> Unit) {
 
     val offsetState by animateDpAsState(
         targetValue = if (startAnimation) 0.dp else 100.dp,
-        animationSpec = tween(durationMillis = 1000),
+        animationSpec = tween(durationMillis = SPLASH_DISPLAY_DURATION.toInt() / 2),
         label = "Splash logo offset animation"
     )
 
     val alphaState by animateFloatAsState(
         targetValue = if (startAnimation) 1f else 0f,
-        animationSpec = tween(durationMillis = 1000),
+        animationSpec = tween(durationMillis = SPLASH_DISPLAY_DURATION.toInt() / 2),
         label = "Splash logo alpha animation"
     )
 
