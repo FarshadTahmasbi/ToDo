@@ -120,7 +120,6 @@ class SharedViewModel @Inject constructor(
             is TaskListContract.Action.QueryTasks -> onQueryTasksAction(action.query)
             is TaskListContract.Action.SortTasks -> onSortTasksAction(action.priority)
             is TaskListContract.Action.DeleteAllTasks -> onDeleteAllTasksAction()
-            else -> Unit
         }
     }
 
@@ -204,7 +203,7 @@ class SharedViewModel @Inject constructor(
         dispatchAction(TaskListContract.Action.QueryTasks(query))
     }
 
-    fun insertOrUpdateTask(task: ToDoTask) {
+    private fun insertOrUpdateTask(task: ToDoTask) {
         dispatchAction(TaskListContract.Action.InsertOrUpdateTask(task))
     }
 

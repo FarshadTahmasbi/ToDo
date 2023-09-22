@@ -5,16 +5,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import com.androidisland.todocompose.arch.CollectEffects
 import com.androidisland.todocompose.arch.CommonEffect
 import com.androidisland.todocompose.common.ui.CustomSnackbarHost
 import com.androidisland.todocompose.common.ui.SnackbarState
 import com.androidisland.todocompose.common.ui.rememberSnackbarState
-import com.androidisland.todocompose.data.models.ToDoTask
-import com.androidisland.todocompose.enums.Priority
 import com.androidisland.todocompose.feature.task.TaskContract
 import com.androidisland.todocompose.feature.task.TaskViewModel
 import kotlinx.coroutines.flow.Flow
@@ -39,42 +34,35 @@ fun TaskScreen(
     )
 
 
-    var title by remember(state) {
-        mutableStateOf(state.task?.title.orEmpty())
-    }
-
-    var description by remember(state) {
-        mutableStateOf(state.task?.description.orEmpty())
-    }
-
-    var priority by remember(state) {
-        mutableStateOf(state.task?.priority ?: Priority.LOW)
-    }
+//    var title by remember(state) {
+//        mutableStateOf(state.task?.title.orEmpty())
+//    }
+//
+//    var description by remember(state) {
+//        mutableStateOf(state.task?.description.orEmpty())
+//    }
+//
+//    var priority by remember(state) {
+//        mutableStateOf(state.task?.priority ?: Priority.LOW)
+//    }
 
 
     Scaffold(topBar = {
         TaskAppBar(
-            toDoTask = state.task,
+            task = state.toTask(),
             onCloseClicked = taskViewModel::navigateToTaskList,
-            onActionClicked = { action ->
-                val task = ToDoTask(
-                    id = state.task?.id ?: 0,
-                    title = title,
-                    description = description,
-                    priority = priority
-                )
-                taskViewModel.dispatchTaskAction(action, task)
-            }
+            onActionClicked = taskViewModel::onActionClick
         )
     }, snackbarHost = { CustomSnackbarHost(hostState = snackbarAppState.hostState) },
         content = { padding ->
-            TaskContent(title = title, onTitleChanged = {
-                title = it
-            }, description = description, onDescriptionChanged = {
-                description = it
-            }, priority = priority, onPrioritySelected = {
-                priority = it
-            }, padding
+            TaskContent(
+                title = state.title,
+                onTitleChanged = taskViewModel::onTaskTitleChange,
+                description = state.description,
+                onDescriptionChanged = taskViewModel::onTaskDescriptionChange,
+                priority = state.priority,
+                onPrioritySelected = taskViewModel::onTaskPriorityChange,
+                padding
             )
         })
 }

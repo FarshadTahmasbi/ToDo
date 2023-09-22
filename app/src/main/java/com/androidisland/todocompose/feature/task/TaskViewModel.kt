@@ -34,12 +34,7 @@ class TaskViewModel @Inject constructor(
         get() = taskId > 0
 
     override val initialState: TaskContract.State
-        get() = TaskContract.State(
-            //I did this to have a better user experience and prevent toolbar change
-            //when task is loaded
-            if (isTaskIdValid) ToDoTask(0, "", "", Priority.LOW)
-            else null
-        )
+        get() = TaskContract.State(id = taskId)
 
     override suspend fun handleAction(
         currentState: TaskContract.State,
@@ -51,19 +46,62 @@ class TaskViewModel @Inject constructor(
                 TaskContract.Effect.NavigateToTaskList
             }
 
-            else -> Unit
+            is TaskContract.Action.OnTaskTitleChange -> setState(currentState.copy(title = action.value))
+            is TaskContract.Action.OnTaskDescriptionChange -> setState(currentState.copy(description = action.value))
+            is TaskContract.Action.OnTaskPriorityChange -> setState(currentState.copy(priority = action.value))
+            is TaskContract.Action.OnAddOrInsertClick -> onAddOrInsertClickAction()
+            is TaskContract.Action.OnDeleteClick -> onDeleteClickAction()
         }
     }
 
     private suspend fun onLoadTaskAction(currentState: TaskContract.State) {
         return withContext(dispatchers.io) {
             val task = getTask()
-            setState(currentState.copy(task = task))
+            setState(
+                currentState.copy(
+                    id = task?.id ?: 0,
+                    title = task?.title.orEmpty(),
+                    description = task?.description.orEmpty(),
+                    priority = task?.priority ?: Priority.LOW
+                )
+            )
         }
+    }
+
+    private fun onAddOrInsertClickAction() {
+        val task = currentState.toTask()
+        if (taskRepository.isValidTask(task)) {
+            taskActionEventChannel.trySend(TaskActionEvent(TaskAction.INSERT_OR_UPDATE, task))
+            navigateToTaskList()
+        } else {
+            dispatchEffect {
+                CommonEffect.ShowSnackBar(
+                    stringResProvider[R.string.empty_fields_msg]
+                )
+            }
+        }
+    }
+
+    private fun onDeleteClickAction() {
+        val task = currentState.toTask()
+        taskActionEventChannel.trySend(TaskActionEvent(TaskAction.DELETE, task))
+        navigateToTaskList()
     }
 
     fun loadTask() {
         dispatchAction(TaskContract.Action.LoadTask)
+    }
+
+    fun onTaskTitleChange(title: String) {
+        dispatchAction(TaskContract.Action.OnTaskTitleChange(title))
+    }
+
+    fun onTaskDescriptionChange(description: String) {
+        dispatchAction(TaskContract.Action.OnTaskDescriptionChange(description))
+    }
+
+    fun onTaskPriorityChange(priority: Priority) {
+        dispatchAction(TaskContract.Action.OnTaskPriorityChange(priority))
     }
 
     fun navigateToTaskList() {
@@ -80,25 +118,10 @@ class TaskViewModel @Inject constructor(
         }
     }
 
-    fun dispatchTaskAction(action: TaskAction, task: ToDoTask) {
-        when (action) {
-            TaskAction.INSERT_OR_UPDATE -> {
-                if (taskRepository.isValidTask(task)) {
-                    taskActionEventChannel.trySend(TaskActionEvent(action, task))
-                    navigateToTaskList()
-                } else {
-                    dispatchEffect {
-                        CommonEffect.ShowSnackBar(
-                            stringResProvider[R.string.empty_fields_msg]
-                        )
-                    }
-                }
-            }
-
-            TaskAction.DELETE -> {
-                taskActionEventChannel.trySend(TaskActionEvent(action, task))
-                navigateToTaskList()
-            }
+    fun onActionClick(taskAction: TaskAction) {
+        when (taskAction) {
+            TaskAction.INSERT_OR_UPDATE -> dispatchAction(TaskContract.Action.OnAddOrInsertClick)
+            TaskAction.DELETE -> dispatchAction(TaskContract.Action.OnDeleteClick)
         }
     }
 }
