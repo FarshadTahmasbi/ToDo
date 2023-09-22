@@ -108,9 +108,19 @@ fun ListSuccessContent(
                 mutableStateOf(false)
             }
 
+            var isItemVisible by remember {
+                mutableStateOf(false)
+            }
+
+            //Animate all added items
+            LaunchedEffect(key1 = Unit) {
+                isItemVisible = true
+            }
+
             //Check if item is dismissed, wait to finish animation, then invoke swipe dismiss
             if (isDismissed) {
                 LaunchedEffect(key1 = Unit) {
+                    isItemVisible = false
                     //Wait for animation
                     delay(visibilityAnimDuration.toLong())
                     onSwipeDismiss(task)
@@ -135,17 +145,9 @@ fun ListSuccessContent(
                 }, label = "Swipe Animation"
             )
 
-            var isItemVisible by remember {
-                mutableStateOf(false)
-            }
-
-            //Animate all added items
-            LaunchedEffect(key1 = Unit) {
-                isItemVisible = true
-            }
 
             AnimatedVisibility(
-                visible = isItemVisible && isDismissed.not(),
+                visible = isItemVisible,
                 enter = expandVertically(animationSpec = tween(durationMillis = visibilityAnimDuration)),
                 exit = shrinkVertically(animationSpec = tween(durationMillis = visibilityAnimDuration))
             ) {
