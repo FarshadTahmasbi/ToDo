@@ -33,20 +33,6 @@ fun TaskScreen(
         navigateToTaskListScreen = navigateToListScreen
     )
 
-
-//    var title by remember(state) {
-//        mutableStateOf(state.task?.title.orEmpty())
-//    }
-//
-//    var description by remember(state) {
-//        mutableStateOf(state.task?.description.orEmpty())
-//    }
-//
-//    var priority by remember(state) {
-//        mutableStateOf(state.task?.priority ?: Priority.LOW)
-//    }
-
-
     Scaffold(topBar = {
         TaskAppBar(
             task = state.toTask(),
