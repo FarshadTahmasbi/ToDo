@@ -9,13 +9,9 @@ import com.androidisland.todocompose.enums.Priority
 
 class TaskContract {
     data class State(
-        val id: Int,
-        val title: String = "",
-        val description: String = "",
-        val priority: Priority = Priority.LOW
-    ) : MviState {
-        fun toTask() = ToDoTask(id, title, description, priority)
-    }
+        val originTask: ToDoTask?,
+        val modifiedTask: ToDoTask
+    ) : MviState
 
     sealed class Action : MviAction {
         object LoadTask : Action()

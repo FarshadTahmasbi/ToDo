@@ -32,11 +32,11 @@ import com.androidisland.todocompose.enums.TaskAction
 
 @Composable
 fun TaskAppBar(
-    task: ToDoTask,
+    task: ToDoTask?,
     onCloseClicked: () -> Unit,
     onActionClicked: (TaskAction) -> Unit
 ) {
-    if (task.id == 0) {
+    if (task == null) {
         NewTaskAppBar(
             onBackClicked = onCloseClicked, onActionClicked = onActionClicked
         )

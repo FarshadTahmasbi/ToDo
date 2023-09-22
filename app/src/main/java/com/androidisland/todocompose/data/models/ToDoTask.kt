@@ -20,7 +20,11 @@ data class ToDoTask(
     val title: String,
     val description: String,
     val priority: Priority
-) : Parcelable
+) : Parcelable {
+    companion object {
+        fun blank() = ToDoTask(0, "", "", Priority.LOW)
+    }
+}
 
 class ToDoTaskNavType : NavType<ToDoTask>(isNullableAllowed = true) {
     override fun get(bundle: Bundle, key: String): ToDoTask? =

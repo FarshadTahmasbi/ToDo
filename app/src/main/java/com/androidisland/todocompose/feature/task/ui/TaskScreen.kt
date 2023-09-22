@@ -35,18 +35,18 @@ fun TaskScreen(
 
     Scaffold(topBar = {
         TaskAppBar(
-            task = state.toTask(),
+            task = state.originTask,
             onCloseClicked = taskViewModel::navigateToTaskList,
             onActionClicked = taskViewModel::onActionClick
         )
     }, snackbarHost = { CustomSnackbarHost(hostState = snackbarAppState.hostState) },
         content = { padding ->
             TaskContent(
-                title = state.title,
+                title = state.modifiedTask.title,
                 onTitleChanged = taskViewModel::onTaskTitleChange,
-                description = state.description,
+                description = state.modifiedTask.description,
                 onDescriptionChanged = taskViewModel::onTaskDescriptionChange,
-                priority = state.priority,
+                priority = state.modifiedTask.priority,
                 onPrioritySelected = taskViewModel::onTaskPriorityChange,
                 padding
             )
