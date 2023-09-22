@@ -5,9 +5,9 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import com.androidisland.todocompose.common.resource.StringResProvider
 import com.androidisland.todocompose.common.resource.StringResProviderImpl
+import com.androidisland.todocompose.data.models.TaskActionEvent
 import com.androidisland.todocompose.ext.dataStore
 import com.androidisland.todocompose.thread.CoroutineDispatchers
-import com.androidisland.todocompose.util.ActionEvent
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -22,28 +22,33 @@ import kotlinx.coroutines.flow.receiveAsFlow
 
 @Module
 @InstallIn(SingletonComponent::class)
-interface AppModule {
+abstract class AppModule {
 
-    @Provides
-    @Singleton
-    fun provideDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
-        context.dataStore
+    companion object {
+        @Provides
+        @Singleton
+        fun provideDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
+            context.dataStore
 
-    @Provides
-    @Singleton
-    fun provideCoroutineDispatchers() =
-        CoroutineDispatchers(
-            Dispatchers.Main,
-            Dispatchers.IO
-        )
+        @Provides
+        @Singleton
+        fun provideCoroutineDispatchers() =
+            CoroutineDispatchers(
+                Dispatchers.Main,
+                Dispatchers.IO
+            )
 
-    @Provides
-    @Singleton
-    fun provideActionEventChannel() = Channel<ActionEvent?>(Channel.BUFFERED)
+        @Provides
+        @Singleton
+        fun provideTaskActionEventChannel() =
+            Channel<TaskActionEvent>(Channel.BUFFERED)
 
-    @Provides
-    @Singleton
-    fun provideActionEventReceiver(channel: Channel<ActionEvent?>) = channel.receiveAsFlow()
+        @Provides
+        @Singleton
+        fun provideTaskActionEventReceiver(channel: Channel<TaskActionEvent>) =
+            channel.receiveAsFlow()
+
+    }
 
     @Binds
     @Singleton

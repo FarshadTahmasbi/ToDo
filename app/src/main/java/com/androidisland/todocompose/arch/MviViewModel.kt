@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 
 
-abstract class MviViewModel<S : State, A : Action, E : Effect>(
+abstract class MviViewModel<S : MviState, A : MviAction, E : MviEffect>(
     protected val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -31,7 +31,7 @@ abstract class MviViewModel<S : State, A : Action, E : Effect>(
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
 
-    private val _effect: Channel<E?> = Channel(Channel.BUFFERED)
+    private val _effect: Channel<E> = Channel(Channel.BUFFERED)
 
     /**
      * Use this flow to collect all side effects.
@@ -47,7 +47,7 @@ abstract class MviViewModel<S : State, A : Action, E : Effect>(
 
     private fun collectActions() {
         _action.onEach {
-            _uiState.value = reduce(currentState, it)
+            handleAction(currentState, it)
         }.launchIn(viewModelScope)
     }
 
@@ -55,10 +55,13 @@ abstract class MviViewModel<S : State, A : Action, E : Effect>(
         _action.tryEmit(action)
     }
 
-    protected abstract suspend fun reduce(currentState: S, action: A): S
+    protected abstract suspend fun handleAction(currentState: S, action: A)
+
+    protected fun setState(state: S) {
+        _uiState.value = state
+    }
 
     protected fun dispatchEffect(builder: () -> E) {
         _effect.trySend(builder())
-        _effect.trySend(null)
     }
 }

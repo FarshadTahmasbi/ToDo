@@ -5,6 +5,7 @@ import android.os.Parcelable
 import androidx.navigation.NavType
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.androidisland.todocompose.enums.Priority
 import com.androidisland.todocompose.ext.getParcelableCompat
 import com.androidisland.todocompose.util.Constants.DATABASE_TABLE
 import com.google.gson.Gson

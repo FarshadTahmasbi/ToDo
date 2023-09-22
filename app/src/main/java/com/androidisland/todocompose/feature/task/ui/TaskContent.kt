@@ -21,7 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.androidisland.todocompose.R
 import com.androidisland.todocompose.common.theme.dimens
 import com.androidisland.todocompose.component.PriorityDropDown
-import com.androidisland.todocompose.data.models.Priority
+import com.androidisland.todocompose.enums.Priority
 
 
 @Composable

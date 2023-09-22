@@ -10,7 +10,7 @@ import com.androidisland.todocompose.common.SharedViewModel
 import com.androidisland.todocompose.ext.screenComposable
 import com.androidisland.todocompose.feature.splash.ui.SplashScreen
 import com.androidisland.todocompose.feature.task.ui.TaskScreen
-import com.androidisland.todocompose.feature.tasklist.ui.ListScreen
+import com.androidisland.todocompose.feature.tasklist.ui.TaskListScreen
 
 
 @Composable
@@ -31,7 +31,7 @@ fun SetUpNavGraph(
             splashComposable(actions.navigateToTaskList)
         }
         listComposable(sharedViewModel, actions.navigateToTask)
-        taskComposable(sharedViewModel, actions.navigateToTaskList)
+        taskComposable(actions.navigateToTaskList)
     }
 }
 
@@ -48,21 +48,19 @@ fun NavGraphBuilder.listComposable(
     navigateToTask: (Int) -> Unit
 ) {
     screenComposable(Screen.TaskList) {
-        ListScreen(
-            sharedViewModel = sharedViewModel,
+        TaskListScreen(
+            viewModel = sharedViewModel,
             navigateToTaskScreen = navigateToTask
         )
     }
 }
 
 fun NavGraphBuilder.taskComposable(
-    sharedViewModel: SharedViewModel,
     navigateToTaskList: () -> Unit
 ) {
     screenComposable(Screen.Task) {
         TaskScreen(
             hiltViewModel(),
-            sharedViewModel,
             navigateToTaskList
         )
     }

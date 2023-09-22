@@ -8,21 +8,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.androidisland.todocompose.R
-import com.androidisland.todocompose.common.SharedViewModel
+import com.androidisland.todocompose.arch.CollectEffects
+import com.androidisland.todocompose.arch.CommonEffect
 import com.androidisland.todocompose.common.ui.CustomSnackbarHost
+import com.androidisland.todocompose.common.ui.SnackbarState
 import com.androidisland.todocompose.common.ui.rememberSnackbarState
-import com.androidisland.todocompose.data.models.Priority
 import com.androidisland.todocompose.data.models.ToDoTask
+import com.androidisland.todocompose.enums.Priority
+import com.androidisland.todocompose.feature.task.TaskContract
 import com.androidisland.todocompose.feature.task.TaskViewModel
-import com.androidisland.todocompose.util.Action
-import com.androidisland.todocompose.util.Either
+import kotlinx.coroutines.flow.Flow
 
 
 @Composable
 fun TaskScreen(
     taskViewModel: TaskViewModel,
-    sharedViewModel: SharedViewModel,
     navigateToListScreen: () -> Unit
 ) {
     val state by taskViewModel.state.collectAsState()
@@ -31,6 +31,13 @@ fun TaskScreen(
     }
 
     val snackbarAppState = rememberSnackbarState()
+
+    HandleEffects(
+        effects = taskViewModel.effect,
+        snackbarAppState = snackbarAppState,
+        navigateToTaskListScreen = navigateToListScreen
+    )
+
 
     var title by remember(state) {
         mutableStateOf(state.task?.title.orEmpty())
@@ -44,35 +51,20 @@ fun TaskScreen(
         mutableStateOf(state.task?.priority ?: Priority.LOW)
     }
 
-    val onActionClicked: (Action) -> Unit = remember(state) {
-        { action: Action ->
-            if (action.isEditMode() && taskViewModel.isValid(title, description).not()) {
-                snackbarAppState.showSnackbar(message = Either.Right(R.string.empty_fields_msg))
-            } else {
-                val currentTask = state.task
-                val task = when (action) {
-                    Action.ADD -> ToDoTask(0, title, description, priority)
-                    Action.UPDATE -> currentTask!!.copy(
-                        title = title,
-                        description = description,
-                        priority = priority
-                    )
-
-                    Action.DELETE -> currentTask
-                    else -> null
-                }
-                if (task != null) {
-                    sharedViewModel.sendActionEvent(action, task)
-                }
-                navigateToListScreen()
-            }
-        }
-    }
 
     Scaffold(topBar = {
         TaskAppBar(
             toDoTask = state.task,
-            onActionClicked = onActionClicked
+            onCloseClicked = taskViewModel::navigateToTaskList,
+            onActionClicked = { action ->
+                val task = ToDoTask(
+                    id = state.task?.id ?: 0,
+                    title = title,
+                    description = description,
+                    priority = priority
+                )
+                taskViewModel.dispatchTaskAction(action, task)
+            }
         )
     }, snackbarHost = { CustomSnackbarHost(hostState = snackbarAppState.hostState) },
         content = { padding ->
@@ -85,4 +77,23 @@ fun TaskScreen(
             }, padding
             )
         })
+}
+
+@Composable
+fun HandleEffects(
+    effects: Flow<CommonEffect>,
+    snackbarAppState: SnackbarState,
+    navigateToTaskListScreen: () -> Unit
+) {
+    CollectEffects(effect = effects) { effect ->
+        when (effect) {
+            is CommonEffect.ShowSnackBar -> snackbarAppState.showSnackbar(
+                message = effect.message,
+                duration = effect.duration
+            )
+
+            is TaskContract.Effect.NavigateToTaskList -> navigateToTaskListScreen()
+            else -> Unit
+        }
+    }
 }

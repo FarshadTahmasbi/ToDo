@@ -1,6 +1,6 @@
 package com.androidisland.todocompose.arch
 
 
-interface State
-interface Action
-interface Effect
+interface MviState
+interface MviAction
+interface MviEffect

@@ -5,7 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.androidisland.todocompose.data.models.Priority
+import com.androidisland.todocompose.enums.PrioritySort
 import dagger.hilt.android.scopes.ViewModelScoped
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
@@ -19,16 +19,16 @@ class DataStoreRepository @Inject constructor(private val dataStore: DataStore<P
         val sortKey = stringPreferencesKey("sort")
     }
 
-    val sortState: Flow<Priority> =
+    val sortState: Flow<PrioritySort> =
         dataStore.data.catch {
             emit(emptyPreferences())
         }.map { prefs ->
-            Priority.valueOf(prefs[sortKey] ?: Priority.NONE.name)
+            PrioritySort.valueOf(prefs[sortKey] ?: PrioritySort.DEFAULT.name)
         }
 
-    suspend fun persistSortState(priority: Priority) {
+    suspend fun persistSortState(sort: PrioritySort) {
         dataStore.edit { prefs ->
-            prefs[sortKey] = priority.name
+            prefs[sortKey] = sort.name
         }
     }
 }

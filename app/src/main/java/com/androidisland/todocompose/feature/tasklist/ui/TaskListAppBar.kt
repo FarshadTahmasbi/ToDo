@@ -47,15 +47,16 @@ import com.androidisland.todocompose.common.theme.alphaDisabled
 import com.androidisland.todocompose.common.theme.dimens
 import com.androidisland.todocompose.component.DisplayAlertDialog
 import com.androidisland.todocompose.component.PriorityItem
-import com.androidisland.todocompose.data.models.Priority
-import com.androidisland.todocompose.util.SearchAppBarState
+import com.androidisland.todocompose.enums.Priority
+import com.androidisland.todocompose.enums.PrioritySort
+import com.androidisland.todocompose.enums.SearchAppBarState
 
 
 @Composable
-fun ListAppBar(
+fun TaskListAppBar(
     searchQuery: String?,
-    selectedPriority: Priority?,
-    onSortClicked: (Priority) -> Unit,
+    sort: PrioritySort,
+    onSortClicked: (PrioritySort) -> Unit,
     onDeleteAllClicked: () -> Unit,
     onSearchClicked: (String) -> Unit,
     onCloseClicked: () -> Unit
@@ -79,8 +80,8 @@ fun ListAppBar(
 
     when (searchAppBarState) {
         SearchAppBarState.CLOSED -> {
-            DefaultListAppBar(
-                selectedPriority = selectedPriority,
+            DefaultTaskListAppBar(
+                sort = sort,
                 onSearchClicked = {
                     searchAppBarState = SearchAppBarState.OPENED
                 }, onSortClicked = onSortClicked, onDeleteAllClicked = onDeleteAllClicked
@@ -107,42 +108,44 @@ fun ListAppBar(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DefaultListAppBar(
-    selectedPriority: Priority?,
+fun DefaultTaskListAppBar(
+    sort: PrioritySort,
     onSearchClicked: () -> Unit,
-    onSortClicked: (Priority) -> Unit,
+    onSortClicked: (PrioritySort) -> Unit,
     onDeleteAllClicked: () -> Unit
 ) {
-    TopAppBar(title = {
-        Text(
-            text = stringResource(id = R.string.list_app_bar_title),
-            color = MaterialTheme.colorScheme.onPrimary
-        )
-    }, colors = TopAppBarDefaults.topAppBarColors(
-        containerColor = MaterialTheme.colorScheme.primary,
-        titleContentColor = MaterialTheme.colorScheme.onPrimary
-    ), actions = {
-        ListAppBarActions(
-            selectedPriority = selectedPriority,
-            onSearchClicked = onSearchClicked,
-            onSortClicked = onSortClicked,
-            onDeleteAllClicked = onDeleteAllClicked
-        )
-    })
+    TopAppBar(
+        title = {
+            Text(
+                text = stringResource(id = R.string.list_app_bar_title),
+                color = MaterialTheme.colorScheme.onPrimary
+            )
+        }, colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            titleContentColor = MaterialTheme.colorScheme.onPrimary
+        ), actions = {
+            TaskListAppBarActions(
+                sort = sort,
+                onSearchClicked = onSearchClicked,
+                onSortClicked = onSortClicked,
+                onDeleteAllClicked = onDeleteAllClicked
+            )
+        })
 }
 
 @Composable
-fun ListAppBarActions(
-    selectedPriority: Priority?,
+fun TaskListAppBarActions(
+    sort: PrioritySort,
     onSearchClicked: () -> Unit,
-    onSortClicked: (Priority) -> Unit,
+    onSortClicked: (PrioritySort) -> Unit,
     onDeleteAllClicked: () -> Unit
 ) {
     var isDialogVisible by remember {
         mutableStateOf(false)
     }
 
-    DisplayAlertDialog(title = stringResource(id = R.string.delete_all_task_confirm_title),
+    DisplayAlertDialog(
+        title = stringResource(id = R.string.delete_all_task_confirm_title),
         message = AnnotatedString(stringResource(id = R.string.delete_all_task_confirm_msg)),
         isDialogVisible = isDialogVisible,
         closeDialog = { isDialogVisible = false }) {
@@ -150,7 +153,7 @@ fun ListAppBarActions(
     }
 
     SearchAction(onSearchClicked = onSearchClicked)
-    SortAction(selectedPriority = selectedPriority, onSortClicked = onSortClicked)
+    SortAction(sort = sort, onSortClicked = onSortClicked)
     DeleteAllAction(onDeleteAllClicked = { isDialogVisible = true })
 }
 
@@ -169,8 +172,8 @@ fun SearchAction(
 
 @Composable
 fun SortAction(
-    selectedPriority: Priority?,
-    onSortClicked: (Priority) -> Unit
+    sort: PrioritySort,
+    onSortClicked: (PrioritySort) -> Unit
 ) {
     var expanded by remember {
         mutableStateOf(false)
@@ -188,34 +191,34 @@ fun SortAction(
             DropdownMenuItem(
                 onClick = {
                     expanded = false
-                    onSortClicked(Priority.LOW)
+                    onSortClicked(PrioritySort.LOW_TO_HIGH)
                 },
                 text = {
                     PriorityItem(
                         priority = Priority.LOW,
-                        isSelected = selectedPriority == Priority.LOW
+                        isSelected = sort == PrioritySort.LOW_TO_HIGH
                     )
                 })
             DropdownMenuItem(
                 onClick = {
                     expanded = false
-                    onSortClicked(Priority.HIGH)
+                    onSortClicked(PrioritySort.HIGH_TO_LOW)
                 },
                 text = {
                     PriorityItem(
                         priority = Priority.HIGH,
-                        isSelected = selectedPriority == Priority.HIGH
+                        isSelected = sort == PrioritySort.HIGH_TO_LOW
                     )
                 })
             DropdownMenuItem(
                 onClick = {
                     expanded = false
-                    onSortClicked(Priority.NONE)
+                    onSortClicked(PrioritySort.DEFAULT)
                 },
                 text = {
                     PriorityItem(
                         priority = Priority.NONE,
-                        isSelected = selectedPriority == Priority.NONE
+                        isSelected = sort == PrioritySort.DEFAULT
                     )
                 })
 
@@ -328,9 +331,9 @@ fun SearchAppBar(
 
 @Preview
 @Composable
-private fun DefaultListAppBarPreview() {
-    DefaultListAppBar(
-        selectedPriority = Priority.HIGH,
+private fun DefaultTaskListAppBarPreview() {
+    DefaultTaskListAppBar(
+        sort = PrioritySort.HIGH_TO_LOW,
         onSearchClicked = {},
         onSortClicked = {},
         onDeleteAllClicked = {})

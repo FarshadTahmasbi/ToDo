@@ -19,7 +19,7 @@
     <string name="title">Title</string>
     <string name="description">Description</string>
     <string name="empty_fields_msg">Title and description fields cannot not be empty</string>
-    <string name="task_add_msg">Task is added successfully</string>
+    <string name="task_insert_msg">Task is added successfully</string>
     <string name="task_update_msg">Task is updated successfully</string>
     <string name="task_delete_msg">Task is deleted successfully</string>
     <string name="delete_all_msg">All tasks are deleted</string>

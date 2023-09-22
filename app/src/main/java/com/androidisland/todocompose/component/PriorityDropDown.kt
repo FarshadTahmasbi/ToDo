@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.IntSize
 import com.androidisland.todocompose.R
 import com.androidisland.todocompose.common.theme.alphaDisabled
 import com.androidisland.todocompose.common.theme.dimens
-import com.androidisland.todocompose.data.models.Priority
+import com.androidisland.todocompose.enums.Priority
 
 
 @Composable

@@ -2,6 +2,7 @@ package com.androidisland.todocompose.data.repository
 
 import com.androidisland.todocompose.data.ToDoDao
 import com.androidisland.todocompose.data.models.ToDoTask
+import com.androidisland.todocompose.enums.PrioritySort
 import dagger.hilt.android.scopes.ViewModelScoped
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
@@ -9,24 +10,25 @@ import kotlinx.coroutines.flow.Flow
 @ViewModelScoped
 class ToDoRepository @Inject constructor(private val toDoDao: ToDoDao) {
 
-    fun getAllTasks(): Flow<List<ToDoTask>> = toDoDao.getAllTasks()
-
-    val sortByLowPriority: Flow<List<ToDoTask>> by lazy {
-        toDoDao.sortByLowPriority()
-    }
-
-    val sortByHighPriority: Flow<List<ToDoTask>> by lazy {
-        toDoDao.sortByHighPriority()
+    fun getTasks(sort: PrioritySort): Flow<List<ToDoTask>> {
+        return when (sort) {
+            PrioritySort.DEFAULT -> toDoDao.getAllTasks()
+            PrioritySort.LOW_TO_HIGH -> toDoDao.sortByLowPriority()
+            PrioritySort.HIGH_TO_LOW -> toDoDao.sortByHighPriority()
+        }
     }
 
     fun getTask(taskId: Int): Flow<ToDoTask> = toDoDao.getTask(taskId)
-    suspend fun addTask(toDoTask: ToDoTask) = toDoDao.addTask(toDoTask)
+    suspend fun insertTask(toDoTask: ToDoTask) = toDoDao.insertTask(toDoTask)
 
     suspend fun updateTask(toDoTask: ToDoTask) = toDoDao.updateTask(toDoTask)
     suspend fun deleteTask(toDoTask: ToDoTask) = toDoDao.deleteTask(toDoTask)
 
-    suspend fun deleteAllTasks() = toDoDao.deleteAllTasks()
+    suspend fun deleteTasks() = toDoDao.deleteAllTasks()
 
-    fun searchTasks(searchQuery: String): Flow<List<ToDoTask>> =
+    fun queryTasks(searchQuery: String): Flow<List<ToDoTask>> =
         toDoDao.searchTasks("%$searchQuery%")
+
+    fun isValidTask(task: ToDoTask) =
+        task.title.isNotEmpty() && task.description.isNotEmpty()
 }

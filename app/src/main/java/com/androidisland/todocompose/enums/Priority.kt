@@ -1,4 +1,4 @@
-package com.androidisland.todocompose.data.models
+package com.androidisland.todocompose.enums
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.capitalize

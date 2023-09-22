@@ -29,7 +29,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,67 +45,45 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.androidisland.todocompose.R
-import com.androidisland.todocompose.common.SharedViewModel
 import com.androidisland.todocompose.common.theme.HighPriorityColor
 import com.androidisland.todocompose.common.theme.dimens
 import com.androidisland.todocompose.common.ui.DismissDirection2
 import com.androidisland.todocompose.common.ui.DismissThreshold
 import com.androidisland.todocompose.common.ui.DismissValue2
 import com.androidisland.todocompose.common.ui.SwipeToDismiss2
-import com.androidisland.todocompose.data.models.Priority
 import com.androidisland.todocompose.data.models.ToDoTask
+import com.androidisland.todocompose.enums.Priority
 import com.androidisland.todocompose.ext.clickableThrottleFirst
 import com.androidisland.todocompose.ext.getSystemService
 import com.androidisland.todocompose.ext.vibrateOneShot
-import com.androidisland.todocompose.util.Action
+import com.androidisland.todocompose.feature.tasklist.TaskListContract
 import kotlinx.coroutines.delay
 
 
 @Composable
-fun ListContent(
-    sortState: Priority?,
-    isInSearchMode: Boolean,
-    sharedViewModel: SharedViewModel,
+fun TaskListContent(
+    state: TaskListContract.State,
     navigateToTaskScreen: (taskId: Int) -> Unit,
-    onSwipeDismiss: (Action, ToDoTask) -> Unit,
+    onSwipeDismiss: (ToDoTask) -> Unit,
     contentPadding: PaddingValues
 ) {
-    if (sortState != null) {
-        val tasksResource by when {
-            isInSearchMode || sortState == Priority.NONE -> sharedViewModel.queriedTasks.collectAsState()
-            sortState == Priority.LOW -> sharedViewModel.lowPriorityTasks.collectAsState()
-            sortState == Priority.HIGH -> sharedViewModel.highPriorityTasks.collectAsState()
-            else -> throw RuntimeException("Unexpected sort state: $sortState")
-        }
-
-        tasksResource.fold(onLoading = {
-            LoadingContent()
-        }, onSuccess = { data ->
-            if (data.isEmpty()) {
-                EmptyContent()
-            } else {
-                ListSuccessContent(
-                    tasks = data,
-                    onSwipeDismiss = onSwipeDismiss,
-                    navigateToTaskScreen = navigateToTaskScreen,
-                    contentPadding = contentPadding
-                )
-            }
-        }, onError = {
-            ErrorContent(
-                message = it.message ?: stringResource(id = R.string.message_general_error)
-            )
-        })
-
-    } else {
-        //Only idle happens
+    when {
+        state.isLoading -> LoadingContent()
+        state.errorMessage != null -> ErrorContent(message = state.errorMessage)
+        state.tasks.isEmpty() -> EmptyContent()
+        else -> ListSuccessContent(
+            tasks = state.tasks,
+            onSwipeDismiss = onSwipeDismiss,
+            navigateToTaskScreen = navigateToTaskScreen,
+            contentPadding = contentPadding
+        )
     }
 }
 
 @Composable
 fun ListSuccessContent(
     tasks: List<ToDoTask>,
-    onSwipeDismiss: (Action, ToDoTask) -> Unit,
+    onSwipeDismiss: (ToDoTask) -> Unit,
     navigateToTaskScreen: (taskId: Int) -> Unit,
     contentPadding: PaddingValues
 ) {
@@ -136,7 +113,7 @@ fun ListSuccessContent(
                 LaunchedEffect(key1 = Unit) {
                     //Wait for animation
                     delay(visibilityAnimDuration.toLong())
-                    onSwipeDismiss(Action.DELETE, task)
+                    onSwipeDismiss(task)
                 }
             }
 
@@ -163,7 +140,7 @@ fun ListSuccessContent(
             }
 
             //Animate all added items
-            LaunchedEffect(key1 = true) {
+            LaunchedEffect(key1 = Unit) {
                 isItemVisible = true
             }
 

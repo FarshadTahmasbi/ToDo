@@ -25,27 +25,35 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.androidisland.todocompose.R
 import com.androidisland.todocompose.component.DisplayAlertDialog
-import com.androidisland.todocompose.data.models.Priority
 import com.androidisland.todocompose.data.models.ToDoTask
-import com.androidisland.todocompose.util.Action
+import com.androidisland.todocompose.enums.Priority
+import com.androidisland.todocompose.enums.TaskAction
 
 
 @Composable
 fun TaskAppBar(
     toDoTask: ToDoTask?,
-    onActionClicked: (Action) -> Unit
+    onCloseClicked: () -> Unit,
+    onActionClicked: (TaskAction) -> Unit
 ) {
     if (toDoTask == null) {
-        NewTaskAppBar(onActionClicked = onActionClicked)
+        NewTaskAppBar(
+            onBackClicked = onCloseClicked, onActionClicked = onActionClicked
+        )
     } else {
-        ExistingTaskAppBar(selectedTask = toDoTask, onActionClicked = onActionClicked)
+        ExistingTaskAppBar(
+            selectedTask = toDoTask,
+            onCloseClicked = onCloseClicked,
+            onActionClicked = onActionClicked
+        )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewTaskAppBar(
-    onActionClicked: (Action) -> Unit
+    onBackClicked: () -> Unit,
+    onActionClicked: (TaskAction) -> Unit
 ) {
     TopAppBar(title = {
         Text(
@@ -53,7 +61,7 @@ fun NewTaskAppBar(
             color = MaterialTheme.colorScheme.onPrimary
         )
     }, navigationIcon = {
-        BackAction(onBackClicked = onActionClicked)
+        BackAction(onBackClicked = onBackClicked)
     }, colors = TopAppBarDefaults.topAppBarColors(
         containerColor = MaterialTheme.colorScheme.primary,
         titleContentColor = MaterialTheme.colorScheme.onPrimary
@@ -64,9 +72,9 @@ fun NewTaskAppBar(
 
 @Composable
 fun BackAction(
-    onBackClicked: (Action) -> Unit
+    onBackClicked: () -> Unit
 ) {
-    IconButton(onClick = { onBackClicked(Action.NO_ACTION) }) {
+    IconButton(onClick = onBackClicked) {
         Icon(
             imageVector = Icons.Filled.ArrowBack,
             contentDescription = stringResource(R.string.back_arrow),
@@ -77,9 +85,9 @@ fun BackAction(
 
 @Composable
 fun AddAction(
-    onAddClicked: (Action) -> Unit
+    onAddClicked: (TaskAction) -> Unit
 ) {
-    IconButton(onClick = { onAddClicked(Action.ADD) }) {
+    IconButton(onClick = { onAddClicked(TaskAction.INSERT_OR_UPDATE) }) {
         Icon(
             imageVector = Icons.Filled.Check,
             contentDescription = stringResource(R.string.add_task),
@@ -92,7 +100,8 @@ fun AddAction(
 @Composable
 fun ExistingTaskAppBar(
     selectedTask: ToDoTask,
-    onActionClicked: (Action) -> Unit
+    onCloseClicked: () -> Unit,
+    onActionClicked: (TaskAction) -> Unit
 ) {
     TopAppBar(title = {
         Text(
@@ -102,7 +111,7 @@ fun ExistingTaskAppBar(
             overflow = TextOverflow.Ellipsis
         )
     }, navigationIcon = {
-        CloseAction(onCloseClicked = onActionClicked)
+        CloseAction(onCloseClicked = onCloseClicked)
     }, colors = TopAppBarDefaults.topAppBarColors(
         containerColor = MaterialTheme.colorScheme.primary,
         titleContentColor = MaterialTheme.colorScheme.onPrimary
@@ -113,9 +122,9 @@ fun ExistingTaskAppBar(
 
 @Composable
 fun CloseAction(
-    onCloseClicked: (Action) -> Unit
+    onCloseClicked: () -> Unit
 ) {
-    IconButton(onClick = { onCloseClicked(Action.NO_ACTION) }) {
+    IconButton(onClick = onCloseClicked) {
         Icon(
             imageVector = Icons.Filled.Close,
             contentDescription = stringResource(R.string.close_icon),
@@ -127,7 +136,7 @@ fun CloseAction(
 @Composable
 fun ExistingTaskAppBarActions(
     selectedTask: ToDoTask,
-    onActionClicked: (Action) -> Unit
+    onActionClicked: (TaskAction) -> Unit
 ) {
     var isDialogVisible by rememberSaveable {
         mutableStateOf(false)
@@ -148,7 +157,7 @@ fun ExistingTaskAppBarActions(
         message = message,
         isDialogVisible = isDialogVisible,
         closeDialog = { isDialogVisible = false }) {
-        onActionClicked(Action.DELETE)
+        onActionClicked(TaskAction.DELETE)
     }
 
     DeleteAction(onDeleteClicked = {
@@ -159,9 +168,9 @@ fun ExistingTaskAppBarActions(
 
 @Composable
 fun DeleteAction(
-    onDeleteClicked: (Action) -> Unit
+    onDeleteClicked: () -> Unit
 ) {
-    IconButton(onClick = { onDeleteClicked(Action.DELETE) }) {
+    IconButton(onClick = onDeleteClicked) {
         Icon(
             imageVector = Icons.Filled.Delete,
             contentDescription = stringResource(R.string.delete_icon),
@@ -172,9 +181,9 @@ fun DeleteAction(
 
 @Composable
 fun UpdateAction(
-    onUpdateClicked: (Action) -> Unit
+    onUpdateClicked: (TaskAction) -> Unit
 ) {
-    IconButton(onClick = { onUpdateClicked(Action.UPDATE) }) {
+    IconButton(onClick = { onUpdateClicked(TaskAction.INSERT_OR_UPDATE) }) {
         Icon(
             imageVector = Icons.Filled.Check,
             contentDescription = stringResource(R.string.update_icon),
@@ -186,12 +195,13 @@ fun UpdateAction(
 @Preview
 @Composable
 fun NewTaskAppBarPreview() {
-    NewTaskAppBar(onActionClicked = {})
+    NewTaskAppBar(onBackClicked = {}, onActionClicked = {})
 }
 
 @Preview
 @Composable
 fun ExistingTaskAppBarPreview() {
-    ExistingTaskAppBar(selectedTask = ToDoTask(1, "Title", "Description goes here", Priority.LOW),
-        onActionClicked = {})
+    ExistingTaskAppBar(selectedTask = ToDoTask(
+        1, "Title", "Description goes here", Priority.LOW
+    ), onCloseClicked = {}, onActionClicked = {})
 }
