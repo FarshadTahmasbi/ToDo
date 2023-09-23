@@ -35,8 +35,13 @@ class TaskViewModel @Inject constructor(
 
     override val initialState: TaskContract.State
         get() = TaskContract.State(
-            originTask = null,
-            modifiedTask = ToDoTask.blank()
+            taskId = taskId,
+            //We choose the proper toolbar by checking title null,
+            //So if the task id is valid, we pass an empty string until the task is loaded!
+            immutableTaskTitle = if (isTaskIdValid) "" else null,
+            taskTitle = "",
+            taskDescription = "",
+            taskPriority = Priority.LOW
         )
 
     override suspend fun handleAction(
@@ -50,27 +55,15 @@ class TaskViewModel @Inject constructor(
             }
 
             is TaskContract.Action.OnTaskTitleChange -> setState(
-                currentState.copy(
-                    modifiedTask = currentState.modifiedTask.copy(
-                        title = action.value
-                    )
-                )
+                currentState.copy(taskTitle = action.value)
             )
 
             is TaskContract.Action.OnTaskDescriptionChange -> setState(
-                currentState.copy(
-                    modifiedTask = currentState.modifiedTask.copy(
-                        description = action.value
-                    )
-                )
+                currentState.copy(taskDescription = action.value)
             )
 
             is TaskContract.Action.OnTaskPriorityChange -> setState(
-                currentState.copy(
-                    modifiedTask = currentState.modifiedTask.copy(
-                        priority = action.value
-                    )
-                )
+                currentState.copy(taskPriority = action.value)
             )
 
             is TaskContract.Action.OnAddOrInsertClick -> onAddOrInsertClickAction()
@@ -83,15 +76,18 @@ class TaskViewModel @Inject constructor(
             val task = getTask()
             setState(
                 currentState.copy(
-                    originTask = task,
-                    modifiedTask = task ?: currentState.modifiedTask
+                    taskId = task?.id ?: 0,
+                    immutableTaskTitle = task?.title,
+                    taskTitle = task?.title.orEmpty(),
+                    taskDescription = task?.description.orEmpty(),
+                    taskPriority = task?.priority ?: Priority.LOW
                 )
             )
         }
     }
 
     private fun onAddOrInsertClickAction() {
-        val task = currentState.modifiedTask
+        val task = currentState.toMutableTask()
         if (taskRepository.isValidTask(task)) {
             taskActionEventChannel.trySend(TaskActionEvent(TaskAction.INSERT_OR_UPDATE, task))
             navigateToTaskList()
@@ -105,7 +101,7 @@ class TaskViewModel @Inject constructor(
     }
 
     private fun onDeleteClickAction() {
-        val task = currentState.modifiedTask
+        val task = currentState.toMutableTask()
         taskActionEventChannel.trySend(TaskActionEvent(TaskAction.DELETE, task))
         navigateToTaskList()
     }

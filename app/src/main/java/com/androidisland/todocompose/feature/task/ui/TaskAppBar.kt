@@ -25,24 +25,22 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.androidisland.todocompose.R
 import com.androidisland.todocompose.component.DisplayAlertDialog
-import com.androidisland.todocompose.data.models.ToDoTask
-import com.androidisland.todocompose.enums.Priority
 import com.androidisland.todocompose.enums.TaskAction
 
 
 @Composable
 fun TaskAppBar(
-    task: ToDoTask?,
+    taskTitle: String?,
     onCloseClicked: () -> Unit,
     onActionClicked: (TaskAction) -> Unit
 ) {
-    if (task == null) {
+    if (taskTitle == null) {
         NewTaskAppBar(
             onBackClicked = onCloseClicked, onActionClicked = onActionClicked
         )
     } else {
         ExistingTaskAppBar(
-            selectedTask = task,
+            taskTitle = taskTitle,
             onCloseClicked = onCloseClicked,
             onActionClicked = onActionClicked
         )
@@ -99,13 +97,13 @@ fun AddAction(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExistingTaskAppBar(
-    selectedTask: ToDoTask,
+    taskTitle: String,
     onCloseClicked: () -> Unit,
     onActionClicked: (TaskAction) -> Unit
 ) {
     TopAppBar(title = {
         Text(
-            text = selectedTask.title,
+            text = taskTitle,
             color = MaterialTheme.colorScheme.onPrimary,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
@@ -116,7 +114,7 @@ fun ExistingTaskAppBar(
         containerColor = MaterialTheme.colorScheme.primary,
         titleContentColor = MaterialTheme.colorScheme.onPrimary
     ), actions = {
-        ExistingTaskAppBarActions(selectedTask, onActionClicked)
+        ExistingTaskAppBarActions(taskTitle, onActionClicked)
     })
 }
 
@@ -135,7 +133,7 @@ fun CloseAction(
 
 @Composable
 fun ExistingTaskAppBarActions(
-    selectedTask: ToDoTask,
+    taskTitle: String,
     onActionClicked: (TaskAction) -> Unit
 ) {
     var isDialogVisible by rememberSaveable {
@@ -143,13 +141,13 @@ fun ExistingTaskAppBarActions(
     }
 
     val message = buildAnnotatedString {
-        val original = stringResource(id = R.string.delete_task_confirm_msg, selectedTask.title)
+        val original = stringResource(id = R.string.delete_task_confirm_msg, taskTitle)
         append(original)
-        val start = original.indexOf(selectedTask.title)
+        val start = original.indexOf(taskTitle)
         addStyle(
             style = SpanStyle(fontWeight = FontWeight.Bold),
             start = start,
-            end = start + selectedTask.title.length
+            end = start + taskTitle.length
         )
     }
 
@@ -201,7 +199,5 @@ fun NewTaskAppBarPreview() {
 @Preview
 @Composable
 fun ExistingTaskAppBarPreview() {
-    ExistingTaskAppBar(selectedTask = ToDoTask(
-        1, "Title", "Description goes here", Priority.LOW
-    ), onCloseClicked = {}, onActionClicked = {})
+    ExistingTaskAppBar("My Task", onCloseClicked = {}, onActionClicked = {})
 }
